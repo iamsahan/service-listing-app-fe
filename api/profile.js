@@ -1,0 +1,67 @@
+import { api } from "../utils/api";
+
+export const profileAPI = {
+  // User Profile
+  getAllCustomers: (filters = {}) =>
+    api.get(`/customers/all`, { params: filters }),
+  updateCustomerProfileStatus: (id, data) =>
+    api.put(`/customer/status/${id}`, data),
+  updateCustomerDataByAdmin: (id, data) =>
+    api.put(`/admin/customers/${id}`, data),
+  getProfileByUserId: (id) => api.get(`/profile/user/${id}`),
+  updateProfile: (data, id) => api.put(`/users/profile/web/${id}`, data),
+  uploadPhoto: (formData) =>
+    api.put("/users/profile/photo/change", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  sendEmailValidation: (id) => api.get(`/users/send-emailvalidate/${id}`),
+  validateEmail: (id) => api.put(`/users/validate-email/${id}`),
+  checkEmailVerification: (id) =>
+    api.get(`/users/check-email-verification/${id}`),
+  deleteCustomer: (id, type = "soft") =>
+    api.delete(`/admin/customers/${id}`, { params: { type } }),
+
+  // User Addresses
+  getAddresses: () => api.get("/users/addresses"),
+  getAddressById: (addressId) => api.get(`/users/addresses/${addressId}`),
+  createAddress: (data) => api.post("/users/addresses", data),
+  updateAddress: (addressId, data) =>
+    api.put(`/users/addresses/${addressId}`, data),
+  deleteAddress: (addressId) => api.delete(`/users/addresses/${addressId}`),
+  setPrimaryAddress: (addressId) =>
+    api.put(`/users/addresses/${addressId}/primary`),
+  getAddressBelongsToCity: (city) => api.get(`/users/city/${city}/addresses`),
+
+  // User Settings
+  updateSettings: (data) => api.put("/users/settings", data),
+  getSettings: () => api.get("/users/settings"),
+
+  // User Account
+  changePassword: (data) => api.put("/users/password", data),
+  deactivateAccount: () => api.put("/users/deactivate"),
+  deleteAccount: () => api.delete("/users/account"),
+  getAccBalance: () => api.get("/payout/acc-balance"),
+  getAccountBalanceLogs: () => api.get("/users/account-balance-logs"),
+  settleProviderAccBalance: (providerId) =>
+    api.post(`/provider-payout/commission/create-order/${providerId}`),
+
+  //User Notifications
+  getUserNotifications: () => api.get("/notification/"),
+  readNotification: (id) => api.put(`/notification/${id}/read`),
+  readAllNotifications: () => api.put(`/notification/read-all`),
+  deleteNotification: (id) => api.delete(`/notification/${id}`),
+  deleteAllNotifications: () => api.delete(`/notification/delete/delete-all`),
+  filterNotifications: (params) => api.get("/notification/filter", { params }),
+  getUserNotificationSettings: () => api.get("/notification/settings"),
+  updateNotificationPreferences: (preferredMethods) =>
+    api.put("/notification/settings", preferredMethods),
+
+  // Commission Payment
+  createCommissionPaymentOrder: (providerId) =>
+    api.post(`/provider-payout/commission/create-order/${providerId}`),
+  verifyCommissionPayment: (providerId, data) =>
+    api.post(`/provider-payout/commission/verify/${providerId}`, data),
+
+  // Stats
+  getProfileOverview: () => api.get("/users/profile/overview"),
+};

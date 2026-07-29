@@ -1,0 +1,30 @@
+/* Remove all borders in the calendar month view */
+.no-border-calendar .rbc-month-view,
+.no-border-calendar .rbc-header,
+.no-border-calendar .rbc-row,
+.no-border-calendar .rbc-day-bg,
+.no-border-calendar .rbc-date-cell,
+.no-border-calendar .rbc-row-segment,
+.no-border-calendar .rbc-time-content,
+.no-border-calendar .rbc-timeslot-group,
+.no-border-calendar .rbc-day-slot .rbc-time-slot {
+  border: none !important;
+}
+
+/* Optional: make headers cleaner */
+.no-border-calendar .rbc-header {
+  background-color: transparent !important;
+  font-weight: 500;
+}
+
+/* Optional: style events */
+.no-border-calendar .rbc-event {
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+}
+
+/* Remove background striping */
+.no-border-calendar .rbc-current {
+  background: none !important;
+}
