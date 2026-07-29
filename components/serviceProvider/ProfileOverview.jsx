@@ -493,7 +493,7 @@ const ProfileOverview = ({ userData, onSettle }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-semibold mb-4">
-              Pay Commission to Qproz
+              Pay Commission to ProHive
             </h2>
             <p className="text-gray-700 mb-4">
               Are you sure you want to proceed with commission payment of{" "}
@@ -506,16 +506,16 @@ const ProfileOverview = ({ userData, onSettle }) => {
             <RazorpayPayoutHandler
               userData={userData}
               amount={userData?.pending_commission || 0}
-              description="Commission Payment to Qproz"
+              description="Commission Payment to ProHive"
               onSuccess={handlePaymentSuccess}
               onError={handlePaymentError}
               onClose={handlePaymentClose}
               buttonText="Proceed to Payment"
-              buttonClass="bg-[#5f60b9] text-white px-4 py-2"
+              buttonClass="bg-black hover:bg-neutral-800 text-white px-4 py-2 rounded-lg"
               showDebugInfo={true}
-              companyName="Qproz"
-              companyLogo="/logo.png"
-              theme="#5f60b9"
+              companyName="ProHive"
+              companyLogo="/assets/images/prohive_logo.png"
+              theme="#10b981"
             />
           </div>
         </div>
@@ -526,7 +526,7 @@ const ProfileOverview = ({ userData, onSettle }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-semibold mb-4">
-              Pay Commission to Qproz
+              Pay Commission to ProHive
             </h2>
             <div className="mb-4">
               <p className="text-gray-700 mb-2">
@@ -537,23 +537,23 @@ const ProfileOverview = ({ userData, onSettle }) => {
               </p>
               <p className="text-sm text-gray-600 mb-4">
                 This payment will settle all your pending commission payments to
-                Qproz.
+                ProHive.
               </p>
             </div>
 
             <RazorpayPayoutHandler
               userData={userData}
               amount={userData?.pending_commission || 0}
-              description="Commission Payment to Qproz"
+              description="Commission Payment to ProHive"
               onSuccess={handlePaymentSuccess}
               onError={handlePaymentError}
               onClose={() => setIsCommissionModalOpen(false)}
               buttonText="Proceed to Payment"
-              buttonClass="bg-orange-600 hover:bg-orange-700 text-white"
+              buttonClass="bg-black hover:bg-neutral-800 text-white px-4 py-2 rounded-lg"
               showDebugInfo={false}
-              companyName="Qproz"
-              companyLogo="/logo.png"
-              theme="#5f60b9"
+              companyName="ProHive"
+              companyLogo="/assets/images/prohive_logo.png"
+              theme="#10b981"
             />
           </div>
         </div>

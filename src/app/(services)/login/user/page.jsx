@@ -13,7 +13,7 @@ import {
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { FaWhatsapp } from "react-icons/fa";
-import { MessageCircle, ChevronDown, ArrowLeft } from "lucide-react";
+import { MessageCircle, ChevronDown, ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -61,7 +61,7 @@ const CustomerLogin = () => {
 
       const response = await LoginAPI.customerLoginSendOTP(
         mobile,
-        selectedMethod,
+        selectedMethod
       );
       if (response.data.success) {
         setStep(2);
@@ -99,21 +99,20 @@ const CustomerLogin = () => {
                 reject(error);
               },
               {
-                enableHighAccuracy: false, // Faster, uses network/wifi location
-                timeout: 15000, // Increased timeout to 15 seconds
-                maximumAge: 300000, // Accept cached positions up to 5 minutes old
-              },
+                enableHighAccuracy: false,
+                timeout: 15000,
+                maximumAge: 300000,
+              }
             );
           });
 
           const { latitude, longitude } = position.coords;
           console.log("User location:", { latitude, longitude });
 
-          // Map coordinates to city using backend LocationService
           try {
             const locationResult = await locationAPI.mapUserToCity(
               latitude,
-              longitude,
+              longitude
             );
             cityId = locationResult.data?.cityId;
             console.log("City ID from location service:", cityId);
@@ -122,7 +121,6 @@ const CustomerLogin = () => {
           }
         } catch (locationError) {
           console.warn("Location fetch error:", locationError.message);
-          // Continue without city mapping - user can select city later
         }
       } else {
         console.warn("Geolocation not supported by browser");
@@ -131,7 +129,7 @@ const CustomerLogin = () => {
       const response = await LoginAPI.customerLoginVerifyOTP(
         mobile,
         otp,
-        cityId,
+        cityId
       );
 
       if (response.data.success) {
@@ -140,7 +138,7 @@ const CustomerLogin = () => {
             role: "customer",
             uId: response.data.user.id,
           },
-          returnUrl,
+          returnUrl
         );
       } else {
         setError("Invalid OTP");
@@ -153,78 +151,96 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center lg:bg-gray-50 px-4">
-      <div className="lg:bg-white -mt-20 flex flex-col lg:flex-row lg:rounded-2xl lg:border w-full max-w-5xl overflow-hidden">
-        {/* Mobile Banner */}
-        <div className="relative h-48 w-full lg:hidden rounded-2xl overflow-hidden">
-          <Image
-            src="/assets/images/login.jpg"
-            alt="Login"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/20 to-black/60" />
-          <div className="absolute inset-0 flex flex-col justify-end text-white p-6">
-            <h2 className="text-2xl font-semibold">Welcome Back!</h2>
-            <p className="text-white/80 text-sm">
-              Login to access your bookings
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-white bg-grid-pattern px-6 py-12 relative overflow-hidden">
+      <style>{`
+        .bg-grid-pattern {
+          background-size: 30px 30px;
+          background-image: linear-gradient(to right, #f3f4f6 1px, transparent 1px),
+                            linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
+        }
+      `}</style>
 
-        {/* Desktop Image */}
-        <div className="hidden lg:block relative w-1/2 min-h-[600px] overflow-hidden">
-          <Image
-            src="/assets/images/login.jpg"
-            alt="Login"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-black/10 to-black/70" />
-          <div className="relative z-10 flex flex-col justify-end h-full text-white p-10">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-1 leading-tight">
-              Welcome Back!
+      {/* Dynamic blob light */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Main Glass card panel */}
+      <div className="bg-white/95 backdrop-blur-md border border-neutral-200 rounded-[2.5rem] w-full max-w-5xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative z-10">
+        
+        {/* Left Side: Illustration Panel */}
+        <div className="relative w-full lg:w-1/2 min-h-[300px] lg:min-h-[600px] flex flex-col justify-end p-10 overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src="/assets/images/login.jpg"
+              alt="Login banner image"
+              fill
+              className="object-cover scale-105 hover:scale-100 transition-transform duration-700"
+              priority
+            />
+            {/* Soft gradient screens */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-black via-black/40 to-transparent opacity-80" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+          </div>
+
+          {/* Overlay info badges */}
+          <div className="relative z-10 flex flex-col space-y-4 text-left">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-wider text-emerald-400 rounded-full w-fit">
+              <ShieldCheck className="size-3.5 text-amber-400" />
+              Secure OTP Portal
+            </div>
+            
+            <h2 className="text-3xl lg:text-4xl font-black text-white leading-tight">
+              Welcome Back <br />
+              to <span className="bg-gradient-to-r from-emerald-400 to-amber-300 bg-clip-text text-transparent">ProHive</span>
             </h2>
-            <p className="text-white/80 text-base">
-              Login to access your bookings and services
+            <p className="text-neutral-300 text-sm max-w-xs leading-relaxed">
+              Login to access active schedules, message your provider, or book new custom home repairs.
             </p>
           </div>
         </div>
 
-        {/* Form Section */}
-        <div className="w-full lg:w-1/2 py-8 px-3 lg:p-12 flex flex-col">
+        {/* Right Side: Action Forms Section */}
+        <div className="w-full lg:w-1/2 py-12 px-6 sm:px-12 lg:p-16 flex flex-col justify-center text-left">
+          
           {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600 text-center">{error}</p>
+            <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl">
+              <p className="text-xs font-bold text-red-600 text-center">{error}</p>
             </div>
           )}
 
           {step === 1 ? (
-            <>
-              <div className="mb-4 md:mb-8">
-                <h3 className="text-3xl font-bold text-gray-900 mb-2">Login</h3>
-                <p className="text-gray-600 text-sm hidden md:block">
-                  Enter your mobile number to receive OTP
+            <div className="space-y-6">
+              
+              {/* Heading */}
+              <div>
+                <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 bg-emerald-50 border border-emerald-100 rounded-full">
+                  <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                    Customer Entrance
+                  </span>
+                </div>
+                <h3 className="text-3xl font-black text-neutral-900 mb-1.5">Sign In</h3>
+                <p className="text-neutral-500 text-sm">
+                  Enter your mobile coordinates to receive a secure login code.
                 </p>
               </div>
 
               <div className="space-y-5">
-                {/* Mobile Input */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                
+                {/* Mobile Entry field */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                     Mobile Number
                   </label>
                   <div className="relative">
-                    <div className="absolute inset-y-0 left-0 flex items-center bg-gray-50 px-4 rounded-l-lg border border-r-0 border-gray-300">
-                      <span className="text-gray-700 font-medium text-sm notranslate">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                      <span className="text-neutral-400 font-extrabold text-sm border-r border-neutral-200 pr-3">
                         +91
                       </span>
                     </div>
                     <input
                       type="tel"
-                      className="w-full pl-16 pr-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                      className="w-full pl-16 pr-4 py-3.5 text-neutral-800 bg-white border border-neutral-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-semibold text-sm"
                       placeholder="Enter 10-digit mobile number"
                       value={mobile.slice(2)}
                       onChange={(e) => {
@@ -238,96 +254,94 @@ const CustomerLogin = () => {
                   </div>
                 </div>
 
-                {/* Method Selector */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                {/* Delivery Selector block */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                     Delivery Method
                   </label>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
-                        className="flex items-center justify-between w-full bg-white border-gray-300 hover:bg-gray-50 h-12 px-4"
+                        className="flex items-center justify-between w-full bg-white border-neutral-200 hover:bg-neutral-50 h-12 rounded-2xl px-4 text-sm font-semibold text-neutral-700 shadow-sm"
                       >
                         <div className="flex items-center gap-2">
                           {selectedMethod === "mobile" ? (
                             <>
-                              <MessageCircle className="w-4 h-4 text-[var(--color-primary)]" />
-                              <span className="text-gray-900">SMS</span>
+                              <MessageCircle className="w-4 h-4 text-emerald-500" />
+                              <span>SMS Text Message</span>
                             </>
                           ) : (
                             <>
-                              <FaWhatsapp className="w-4 h-4 text-green-500" />
-                              <span className="text-gray-900">WhatsApp</span>
+                              <FaWhatsapp className="w-4 h-4 text-emerald-500" />
+                              <span>WhatsApp Message</span>
                             </>
                           )}
                         </div>
-                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                        <ChevronDown className="w-4 h-4 text-neutral-400" />
                       </Button>
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent
                       align="start"
-                      className="w-[var(--radix-dropdown-menu-trigger-width)]"
+                      className="w-[var(--radix-dropdown-menu-trigger-width)] rounded-2xl p-1.5"
                     >
                       <DropdownMenuItem
                         onClick={() => setSelectedMethod("mobile")}
-                        className="flex items-center gap-2 cursor-pointer"
+                        className="flex items-center gap-2.5 cursor-pointer rounded-xl font-semibold text-xs py-2.5 text-neutral-700"
                       >
-                        <MessageCircle className="w-4 h-4 text-[var(--color-primary)]" />
-                        SMS
+                        <MessageCircle className="w-4 h-4 text-emerald-500" />
+                        SMS Text Message
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
                         onClick={() => setSelectedMethod("whatsapp")}
-                        className="flex items-center gap-2 cursor-pointer"
+                        className="flex items-center gap-2.5 cursor-pointer rounded-xl font-semibold text-xs py-2.5 text-neutral-700"
                       >
-                        <FaWhatsapp className="w-4 h-4 text-green-500" />
-                        WhatsApp
+                        <FaWhatsapp className="w-4 h-4 text-emerald-500" />
+                        WhatsApp Message
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submission button */}
                 <button
-                  className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg hover:bg-[##5f60b9]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="w-full bg-black hover:bg-neutral-800 text-white py-4 rounded-2xl font-bold uppercase tracking-wider text-xs shadow-md transition-all disabled:opacity-50"
                   onClick={handleSendOtp}
                   disabled={isLoading || !(mobile.length === 12)}
                 >
-                  {isLoading ? "Sending..." : "Send OTP"}
+                  {isLoading ? "Sending Code..." : "Send Verification Code"}
                 </button>
 
-                {/* Terms */}
-                <p className="text-xs text-gray-500 text-center px-3 leading-relaxed">
+                {/* Legal rules */}
+                <p className="text-[11px] text-neutral-400 text-center px-4 leading-relaxed">
                   By continuing, you agree to our{" "}
-                  <Link href="/terms-and-conditions">
-                    <span className="text-[var(--color-primary)] font-medium cursor-pointer hover:underline">
-                      Terms and Conditions
-                    </span>
+                  <Link href="/terms-and-conditions" className="text-emerald-600 font-extrabold hover:underline">
+                    Terms & Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy-policy">
-                    <span className="text-[var(--color-primary)] font-medium cursor-pointer hover:underline">
-                      Privacy Policy
-                    </span>
-                  </Link>
+                  <Link href="/privacy-policy" className="text-emerald-600 font-extrabold hover:underline">
+                    Privacy Rules
+                  </Link>.
                 </p>
+
               </div>
-            </>
+            </div>
           ) : (
-            <div className="flex flex-col">
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Verify OTP
-                </h3>
-                <p className="text-gray-600 text-sm">
-                  Enter the 6-digit code sent to +{mobile}
+            <div className="space-y-6">
+              
+              {/* Heading */}
+              <div>
+                <h3 className="text-2xl font-black text-neutral-900 mb-1.5">Verify Code</h3>
+                <p className="text-neutral-500 text-sm">
+                  Input the 6-digit confirmation pin sent to <span className="font-bold text-neutral-800">+{mobile}</span>
                 </p>
               </div>
 
               <div className="space-y-6">
-                {/* OTP Input */}
+                
+                {/* OTP grids */}
                 <div className="flex justify-center">
                   <InputOtp
                     length={6}
@@ -337,53 +351,56 @@ const CustomerLogin = () => {
                   />
                 </div>
 
-                {/* Timer/Resend */}
+                {/* Expiration warning timer */}
                 <div className="text-center">
                   {timer > 0 ? (
-                    <p className="text-sm text-gray-600">
-                      OTP expires in{" "}
-                      <span className="font-semibold text-gray-900">
+                    <p className="text-xs text-neutral-500">
+                      Code expires in{" "}
+                      <span className="font-bold text-neutral-800 bg-neutral-100 px-2.5 py-1 rounded-full ml-1">
                         {Math.floor(timer / 60)}:
                         {String(timer % 60).padStart(2, "0")}
                       </span>
                     </p>
                   ) : (
                     <button
-                      className="text-sm text-gray-900 font-medium hover:underline"
+                      className="text-xs text-emerald-600 font-bold hover:underline"
                       onClick={handleSendOtp}
                       disabled={isLoading}
                     >
-                      {isLoading ? "Resending..." : "Resend OTP"}
+                      {isLoading ? "Resending..." : "Resend Verification Code"}
                     </button>
                   )}
                 </div>
 
-                {/* Verify Button */}
+                {/* Verify clicker */}
                 <button
                   type="button"
-                  className="w-full bg-[var(--color-primary)] text-white py-3 rounded-lg hover:bg-[##5f60b9]/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-2xl font-bold uppercase tracking-wider text-xs shadow-md transition-all disabled:opacity-50"
                   onClick={handleVerifyOtp}
                   disabled={isLoading || otp.length !== 6}
                 >
-                  {isLoading ? "Verifying..." : "Verify OTP"}
+                  {isLoading ? "Verifying Pin..." : "Confirm & Login"}
                 </button>
 
-                {/* Back Button */}
+                {/* Go back */}
                 <button
-                  className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 py-2 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 text-neutral-500 hover:text-neutral-800 py-2 text-xs font-bold transition-colors uppercase tracking-wider"
                   onClick={() => {
                     setStep(1);
                     setOtp("");
                     setError("");
                   }}
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-4 h-4 text-emerald-500" />
                   Change Mobile Number
                 </button>
+
               </div>
             </div>
           )}
+
         </div>
+
       </div>
     </div>
   );

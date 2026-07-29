@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, CreditCard, Ticket } from "lucide-react";
+import { ChevronLeft, CreditCard, Ticket, AlertCircle } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
@@ -218,27 +218,47 @@ export default function BookingPage() {
     setCouponSuccessDialogOpen(true);
   };
 
+  const isValidUrl = (url) => {
+    if (!url || typeof url !== "string") return false;
+    if (url.startsWith("/") || url.startsWith("data:")) return true;
+    try {
+      if (url.startsWith("undefined")) return false;
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
   const getImageUrl = (segment) => {
-    return segment ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}${segment}` : "";
+    const raw = segment ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}${segment}` : "";
+    return isValidUrl(raw) ? raw : "/assets/images/card-1.jpg";
   };
 
   if (!selectedItems.length) return null;
 
   return (
-    <div className="min-h-screen container mx-auto p-5 sm:p-8">
+    <div className="min-h-screen container mx-auto p-5 sm:p-8 max-w-7xl">
+      {/* Back button */}
       <Button
         variant="ghost"
-        className="p-0 hover:bg-transparent hover:text-[#5f60b9]"
+        className="p-0 hover:bg-transparent text-neutral-500 hover:text-neutral-900 flex items-center justify-start gap-1 text-xs font-bold uppercase tracking-wider transition-colors mb-4"
         onClick={() => router.back()}
       >
         <ChevronLeft className="h-4 w-4" />
         Back
       </Button>
 
-      <h1 className="text-3xl ml-1 font-bold text-gray-800 mb-8">Checkout</h1>
+      {/* Header Title */}
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-neutral-900 tracking-tight pl-1 mb-8 text-left">
+        Checkout
+      </h1>
 
-      <div className="flex lg:flex-row gap-2 lg:gap-10 flex-col-reverse">
-        <div className="lg:w-2/3 space-y-6 pb-10 lg:pb-0">
+      {/* Structured 12-column Grid layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Column: Form Details */}
+        <div className="lg:col-span-8 space-y-6 pb-10 lg:pb-0">
           <BookingForm
             cityId={cityId}
             city={cityName}
@@ -252,53 +272,64 @@ export default function BookingPage() {
           <Button
             disabled={loading}
             onClick={handleSubmitClick}
-            className="w-full h-12 [&_svg]:size-5 lg:hidden"
+            className="w-full bg-black text-white hover:bg-neutral-800 rounded-xl font-bold py-3.5 uppercase tracking-wider text-xs shadow-md transition-all lg:hidden"
           >
-            <CreditCard />
+            <CreditCard className="size-4 mr-2" />
             Proceed to Pay
           </Button>
         </div>
 
-        <Card className="lg:w-1/3 h-fit border-none shadow-none">
-          <CardHeader className="pt-0 px-3">
-            <CardTitle className="text-lg">Booking Summary</CardTitle>
+        {/* Right Column: Card Summary */}
+        <Card className="lg:col-span-4 border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white overflow-hidden text-left h-fit">
+          <CardHeader className="bg-white border-b border-neutral-100 py-4 px-5">
+            <CardTitle className="font-black uppercase text-xs tracking-wider text-neutral-800 flex items-center gap-2">
+              Booking Summary
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          
+          <CardContent className="p-5">
             <div className="space-y-4">
-              {selectedItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex justify-between gap-4 items-start"
-                >
-                  <div className="flex gap-3 items-center">
-                    <Image
-                      src={getImageUrl(item.image_url)}
-                      alt={item.name}
-                      width={48}
-                      height={48}
-                      className="size-12 object-cover rounded-md bg-gray-200"
-                      loading="lazy"
-                    />
-                    <div className="text-xs space-y-1">
-                      <p className="font-medium">{item.name}</p>
-
-                      <p className="text-gray-500 notranslate">
-                        ₹{item.price} x{item.quantity}
-                      </p>
+              
+              {/* Item lists */}
+              <div className="space-y-3.5 max-h-[260px] overflow-y-auto pr-1">
+                {selectedItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex justify-between gap-4 items-start bg-neutral-50 border border-neutral-200/40 rounded-2xl p-3"
+                  >
+                    <div className="flex gap-3 items-center min-w-0">
+                      <div className="relative size-12 rounded-xl border border-neutral-100 overflow-hidden shrink-0 bg-neutral-100">
+                        <Image
+                          src={getImageUrl(item.image_url)}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="text-xs space-y-1 min-w-0 text-left">
+                        <p className="font-extrabold text-neutral-900 leading-tight truncate">
+                          {item.name}
+                        </p>
+                        <p className="text-neutral-400 font-bold notranslate">
+                          ₹{formatPrice(item.price)} x{item.quantity}
+                        </p>
+                      </div>
                     </div>
+                    <span className="font-black text-xs text-neutral-900 mt-1.5 shrink-0 notranslate">
+                      ₹{formatPrice(item.price * item.quantity)}
+                    </span>
                   </div>
-                  <span className="font-medium text-sm mt-1 notranslate">
-                    ₹{formatPrice(item.price * item.quantity)}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
 
-              <div className="border-t py-4 space-y-4">
+              {/* Coupon Actions */}
+              <div className="border-t border-neutral-100 pt-4 space-y-4">
                 <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="Enter coupon code"
-                    className="border rounded px-3 py-2 flex-grow min-w-0"
+                    className="border border-neutral-200 focus:ring-1 focus:ring-emerald-500/20 rounded-xl px-3 py-2 text-xs font-semibold flex-grow min-w-0"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     disabled={!!appliedCoupon}
@@ -307,14 +338,14 @@ export default function BookingPage() {
                     <Button
                       onClick={handleCouponApply}
                       disabled={loading || couponLoading || !couponCode}
-                      className="flex-shrink-0 bg-[#5f60b9]/10 hover:bg-[#5f60b9] text-[#5f60b9] hover:text-white"
+                      className="bg-black hover:bg-neutral-800 text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-sm shrink-0"
                     >
                       Apply
                     </Button>
                   ) : (
                     <Button
                       onClick={handleCouponRemove}
-                      className="flex-shrink-0 bg-destructive/10 hover:bg-destructive text-destructive hover:text-white"
+                      className="bg-red-550 hover:bg-red-650 text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl transition-all shadow-sm shrink-0"
                     >
                       Remove
                     </Button>
@@ -324,33 +355,34 @@ export default function BookingPage() {
                 <Button
                   variant="outline"
                   onClick={openCouponDialog}
-                  className="w-full"
+                  className="w-full border-neutral-200 hover:bg-neutral-50 text-xs font-bold uppercase tracking-wider py-3 rounded-xl flex items-center justify-center gap-1.5"
                 >
-                  <Ticket className="mr-2 h-4 w-4" />
+                  <Ticket className="h-4 w-4 text-emerald-500" />
                   View My Coupons
                 </Button>
 
                 {appliedCoupon && (
-                  <>
-                    <div className="flex justify-between text-sm font-semibold">
+                  <div className="space-y-2 border-t border-neutral-100 pt-3">
+                    <div className="flex justify-between text-xs font-bold text-neutral-500 pl-1">
                       <span>Subtotal</span>
                       <span className="notranslate">
                         ₹{formatPrice(totalAmount)}
                       </span>
                     </div>
 
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs font-bold text-emerald-600 pl-1">
                       <span>Coupon Discount</span>
                       <span className="notranslate">
                         - ₹{formatPrice(couponDiscount)}
                       </span>
                     </div>
-                  </>
+                  </div>
                 )}
 
-                <div className="flex justify-between items-center text-lg font-bold">
-                  <span className="text-[#5f60b9]">Total</span>
-                  <span className="notranslate">
+                {/* Final total display */}
+                <div className="flex justify-between items-center text-lg font-black border-t border-neutral-100 pt-3 pl-1">
+                  <span className="text-neutral-400 font-extrabold uppercase text-xs tracking-wider">Total Amount</span>
+                  <span className="notranslate text-neutral-900 font-black text-xl">
                     ₹{formatPrice(discountedTotal)}
                   </span>
                 </div>
@@ -358,14 +390,15 @@ export default function BookingPage() {
                 <Button
                   disabled={loading}
                   onClick={handleSubmitClick}
-                  className="w-full h-12 [&_svg]:size-5 hidden lg:flex"
+                  className="w-full bg-black text-white hover:bg-neutral-800 font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-md transition-all duration-300 hidden lg:flex items-center justify-center gap-2"
                 >
-                  <CreditCard /> Proceed to Pay
+                  <CreditCard className="size-4" /> Proceed to Pay
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
+
       </div>
 
       {/* Coupon Dialog */}

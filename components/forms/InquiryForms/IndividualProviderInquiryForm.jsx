@@ -386,18 +386,18 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto pl-1">
+    <div className="max-w-2xl mx-auto pl-1 text-left">
       {isLoading && (
         <LoadingScreen message={"Inquiry Application Submitting...."} />
       )}
       <form onSubmit={handleSubmit}>
         {/* Step 1: General Information */}
         {step === 1 && (
-          <div className="flex flex-col space-y-4">
+          <div className="flex flex-col space-y-5">
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Full Name
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="text"
@@ -408,23 +408,23 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 required
                 maxLength={100}
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "bg-red-500/5 border border-red-500/50 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.name,
                   }
                 )}
               />
-              {errors.name && <p className="text-red-500">{errors.name}</p>}
+              {errors.name && <p className="text-red-500 text-xs pl-2">{errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">Gender</label>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">Gender</label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -434,10 +434,10 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="block">Date Of Birth</label>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">Date Of Birth</label>
 
               <div
-                className={cn("rounded-md", {
+                className={cn("rounded-2xl overflow-hidden", {
                   "border border-red-500/50": errors.dob,
                 })}
               >
@@ -476,9 +476,10 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: errors.dob
                               ? "rgba(239, 68, 68, 0.05)"
-                              : "#f3f4f6",
-                            border: "none",
-                            borderRadius: "0.375rem",
+                              : "#ffffff",
+                            border: errors.dob ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                            borderRadius: "1rem",
+                            transition: "all 0.2s ease-in-out",
                             "& fieldset": {
                               border: "none",
                             },
@@ -486,15 +487,21 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                               border: "none",
                             },
                             "&.Mui-focused fieldset": {
-                              border: "2px solid #3b82f6",
+                              border: "none",
+                            },
+                            "&.Mui-focused": {
+                              borderColor: "#10b981",
+                              boxShadow: "0 0 0 4px rgba(16, 185, 129, 0.12)",
                             },
                             "&.Mui-error fieldset": {
-                              border: "1px solid #ef4444",
+                              border: "none",
                             },
                           },
                           "& .MuiInputBase-input": {
-                            padding: "8px 12px",
-                            height: "24px",
+                            padding: "12px 16px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#1f2937",
                           },
                         },
                       },
@@ -503,13 +510,13 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 </LocalizationProvider>
               </div>
 
-              {errors.dob && <p className="text-red-500">{errors.dob}</p>}
+              {errors.dob && <p className="text-red-500 text-xs pl-2">{errors.dob}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
-                Email
-                <span className="text-red-500">*</span>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
+                Email Address
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="email"
@@ -520,20 +527,20 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 required
                 maxLength={50}
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "bg-red-500/5 border border-red-500/50 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.email,
                   }
                 )}
               />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-xs pl-2">{errors.email}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
-                Phone
-                <span className="text-red-500">*</span>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
+                Mobile Number
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="number"
@@ -543,23 +550,23 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 placeholder="e.g., 0123456789"
                 required
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                   {
-                    "bg-red-500/5 border border-red-500/50 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.mobile,
                   }
                 )}
               />
-              {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
+              {errors.mobile && <p className="text-red-500 text-xs pl-2">{errors.mobile}</p>}
             </div>
 
-            <div className="pt-3">
+            <div className="pt-4">
               <button
                 type="button"
                 onClick={nextStep}
-                className="w-full bg-[var(--color-primary)] hover:bg-indigo-600 text-white py-3 px-6 rounded-lg"
+                className="w-full bg-black hover:bg-neutral-800 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md transition-all"
               >
-                Next
+                Next Step
               </button>
             </div>
           </div>
@@ -567,11 +574,11 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
 
         {/* Step 2: Service Details */}
         {step === 2 && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Cities/Regions of Service
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
 
               <Select
@@ -586,33 +593,37 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                     ...base,
                     backgroundColor: errors.cities
                       ? "rgba(239, 68, 68, 0.05)"
-                      : "#f3f4f6",
-                    borderRadius: "0.375rem",
+                      : "#ffffff",
+                    borderRadius: "1rem",
                     border: state.isFocused
-                      ? "2px solid #3b82f6"
+                      ? "1px solid #10b981"
                       : errors.cities
                       ? "1px solid #ef4444"
-                      : "none",
-                    boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
+                      : "1px solid #e5e7eb",
+                    boxShadow: state.isFocused ? "0 0 0 4px rgba(16, 185, 129, 0.12)" : "none",
+                    padding: "2px 4px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#6b7280",
+                    color: "#9ca3af",
                   }),
                 }}
               />
-              {errors.cities && <p className="text-red-500">{errors.cities}</p>}
+              {errors.cities && <p className="text-red-500 text-xs pl-2">{errors.cities}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
-                Exact Location
-                <span className="text-red-500">*</span>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
+                Exact Work Location
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <div
-                className={cn({
-                  "border-red-500 bg-red-500/5": errors.location,
-                  "border-gray-300": !errors.location,
+                className={cn("rounded-2xl overflow-hidden", {
+                  "border border-red-500 bg-red-500/5": errors.location,
+                  "border border-neutral-200": !errors.location,
                 })}
               >
                 <SetLocationWithMap
@@ -622,14 +633,14 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 />
               </div>
               {errors.location && (
-                <p className="text-red-500">{errors.location}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.location}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
-                Service Categories
-                <span className="text-red-500">*</span>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
+                Service Specialties
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
 
               <Select
@@ -644,30 +655,34 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                     ...base,
                     backgroundColor: errors.categories
                       ? "rgba(239, 68, 68, 0.05)"
-                      : "#f3f4f6",
-                    borderRadius: "0.375rem",
+                      : "#ffffff",
+                    borderRadius: "1rem",
                     border: state.isFocused
-                      ? "2px solid #3b82f6"
+                      ? "1px solid #10b981"
                       : errors.categories
                       ? "1px solid #ef4444"
-                      : "none",
-                    boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
+                      : "1px solid #e5e7eb",
+                    boxShadow: state.isFocused ? "0 0 0 4px rgba(16, 185, 129, 0.12)" : "none",
+                    padding: "2px 4px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#6b7280",
+                    color: "#9ca3af",
                   }),
                 }}
               />
               {errors.categories && (
-                <p className="text-red-500">{errors.categories}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.categories}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Years of Experience
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="number"
@@ -679,22 +694,22 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 placeholder="e.g., 5"
                 required
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "bg-red-500/5 border border-red-500/50 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.years_experience,
                   }
                 )}
               />
               {errors.years_experience && (
-                <p className="text-red-500">{errors.years_experience}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.years_experience}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
-                Skills
-                <span className="text-red-500">*</span>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
+                Specific Skills Summary
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="text"
@@ -703,30 +718,30 @@ const IndividualProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 onChange={handleChange}
                 placeholder="e.g., Plumbing, Electrical work, Home repairs"
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "bg-red-500/5 border border-red-500/50 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.skills,
                   }
                 )}
               />
-              {errors.skills && <p className="text-red-500">{errors.skills}</p>}
+              {errors.skills && <p className="text-red-500 text-xs pl-2">{errors.skills}</p>}
             </div>
 
-            <div className="w-full flex gap-2 pt-3">
+            <div className="w-full flex gap-3 pt-4">
               <button
                 type="button"
                 onClick={prevStep}
-                className="bg-[var(--color-primary)] text-white py-3 px-6 rounded w-1/2"
+                className="w-1/2 bg-neutral-100 hover:bg-neutral-200 text-black py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm transition-all"
               >
                 Back
               </button>
 
               <button
                 type="submit"
-                className="bg-green-500 text-white py-3 px-6 rounded w-1/2"
+                className="w-1/2 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md transition-all"
               >
-                Submit
+                Submit Application
               </button>
             </div>
           </div>

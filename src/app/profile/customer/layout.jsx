@@ -140,10 +140,10 @@ const layout = ({ children }) => {
         <Link href="/support">
           <span
             aria-label="Contact Support"
-            className="fixed bottom-6 right-6 z-50 bg-[#5f60b9] hover:bg-[#4a4a9f] text-white px-4 py-3 rounded-full shadow-lg flex items-center gap-2 sm:px-3 sm:py-3 md:px-4 md:py-3"
+            className="fixed bottom-6 right-6 z-50 bg-black hover:bg-neutral-800 text-white px-4.5 py-3 rounded-full shadow-2xl flex items-center gap-2 transition-all duration-300 active:scale-95 text-xs font-bold uppercase tracking-wider"
           >
-            <MessageCircle className="w-6 h-6" />
-            <span className="hidden text-sm pr-1 lg:inline">
+            <MessageCircle className="w-5 h-5 text-emerald-450" />
+            <span className="hidden pr-1 lg:inline">
               Contact Support
             </span>
           </span>

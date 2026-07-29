@@ -1,17 +1,17 @@
 import PolicyPage from "@/components/docs/PolicyPage";
 
 export const metadata = {
-  title: "Terms and Conditions – QProz",
+  title: "Terms and Conditions – ProHive",
   description:
-    "Read the Terms and Conditions of QProz services. Learn about your rights, responsibilities, and the rules for using our platform.",
+    "Read the Terms and Conditions of ProHive services. Learn about your rights, responsibilities, and the rules for using our platform.",
   openGraph: {
-    title: "Terms and Conditions – QProz",
+    title: "Terms and Conditions – ProHive",
     description:
-      "Understand the terms and conditions of using QProz. Stay informed about your rights, obligations, and service policies.",
+      "Understand the terms and conditions of using ProHive. Stay informed about your rights, obligations, and service policies.",
     images: ["/assets/images/swiper-1.jpg"],
   },
   alternates: {
-    canonical: "https://qproz.com/terms-and-conditions",
+    canonical: "https://prohive.com/terms-and-conditions",
   },
 };
 

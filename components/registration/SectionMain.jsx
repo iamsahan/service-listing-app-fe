@@ -6,73 +6,83 @@ import {
   BarChart3,
   LifeBuoy,
   IndianRupee,
+  Sparkles,
 } from "lucide-react";
+import SectionBadge from "@/components/home/SectionBadge";
 
 const features = [
   {
     title: "Unlimited Earnings",
-    desc: "Start your earning from day one",
+    desc: "Start your earning from day one with automatic job allocations.",
     icon: IndianRupee,
+    accent: "text-emerald-500 bg-emerald-50 border-emerald-100/50",
   },
   {
     title: "Flexible Work Hours",
-    desc: "Enjoy the freedom to choose your working hours",
+    desc: "Enjoy the freedom to toggle availability and choose your working slots.",
     icon: Clock,
+    accent: "text-amber-500 bg-amber-50 border-amber-100/50",
   },
   {
-    title: "100% Safety",
-    desc: "A dedicated safety team is available to assist in unsafe situations",
+    title: "100% Safety Support",
+    desc: "A dedicated regional safety team is available for real-time order audits.",
     icon: ShieldCheck,
+    accent: "text-emerald-500 bg-emerald-50 border-emerald-100/50",
   },
   {
-    title: "Transparent Payments",
-    desc: "Receive timely and transparent payments for every service you provide",
+    title: "Secure Commission Logs",
+    desc: "Transparent escrow payouts completed immediately after customer satisfaction.",
     icon: CreditCard,
+    accent: "text-neutral-700 bg-neutral-100 border-neutral-200/50",
   },
   {
     title: "Growth Opportunities",
-    desc: "Get access to training and upskilling programs to grow your career",
+    desc: "Get access to training and upskilling programs to scale your business.",
     icon: BarChart3,
+    accent: "text-[#10b981] bg-emerald-50 border-emerald-100/50",
   },
   {
-    title: "Partner Support",
-    desc: "Our team is available to help you when you need assistance",
+    title: "Elite Partner Desk",
+    desc: "Direct helpdesk lines to resolve registration or payout inquiries.",
     icon: LifeBuoy,
+    accent: "text-amber-500 bg-amber-50 border-amber-100/50",
   },
 ];
 
 export default function RegistrationSectionMain() {
   return (
-    <section className="px-2 lg:p-10 lg:bg-gray-50 text-gray-800 rounded-xl">
-      <div className="lg:px-6">
-        <h2 className="text-xl sm:text-4xl font-bold mb-4">
-          Why do Partners love{" "}
-          <span className="text-[var(--color-primary)]">QProz?</span>
-        </h2>
+    <section className="px-6 py-16 bg-neutral-50 border border-neutral-200/50 rounded-[2.5rem] text-neutral-900 text-left">
+      <div className="max-w-7xl mx-auto space-y-12">
+        <div className="space-y-4">
+          <SectionBadge>Partner Perks</SectionBadge>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            Why Specialists Love ProHive
+          </h2>
+          <p className="text-neutral-500 text-sm max-w-xl leading-relaxed">
+            At ProHive, we respect your skills, timings, and efforts. We build transparent digital infrastructure allowing you to scale your business seamlessly.
+          </p>
+        </div>
 
-        <p className="text-gray-600 text-sm mb-12 max-w-2xl">
-          At QProz, we respect our partners’ skills and efforts. We know you
-          deserve the best, so we strive to give you the best.
-        </p>
-
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <div
                 key={index}
-                className="flex flex-col items-center text-center lg:bg-white lg:p-4 lg:rounded-xl"
+                className="p-6 bg-white border border-neutral-200/60 rounded-3xl space-y-4 hover:shadow-sm transition-all hover:-translate-y-0.5"
               >
-                <div className="size-14 lg:size-16 flex items-center justify-center bg-[var(--color-primary-light)] rounded-full mb-4 bg-gray-100">
-                  <Icon className="w-7 h-7 text-[var(--color-primary)]" />
+                <div className={`size-11 flex items-center justify-center border rounded-xl shrink-0 ${feature.accent}`}>
+                  <Icon className="size-5" />
                 </div>
 
-                <h3 className="font-semibold text-base lg:text-lg mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 text-xs lg:text-sm">
-                  {feature.desc}
-                </p>
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-base text-neutral-900">
+                    {feature.title}
+                  </h3>
+                  <p className="text-neutral-500 text-xs sm:text-sm leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
               </div>
             );
           })}

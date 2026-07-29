@@ -6,7 +6,7 @@ import {
   CalendarPlus,
   SquareArrowOutUpRight,
   ChevronLeft,
-  GalleryVerticalEnd,
+  LayoutDashboard,
 } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -15,7 +15,6 @@ export default function ProfileHeader() {
   const router = useRouter();
 
   const handleBack = () => {
-    // Skip payment pages
     if (path.includes("/profile/customer/bookings/BKG")) {
       router.push("/profile/customer/bookings");
     } else {
@@ -39,24 +38,24 @@ export default function ProfileHeader() {
   const showBackButton = currentPage !== "customer";
 
   return (
-    <div className="w-[93vw] bg-[#5f60b9]/10 border h-[4.5rem] top-5 backdrop-blur-sm border-[#5f60b9]/10 rounded-xl mt-5 mb-4 lg:border-none lg:my-0 lg:w-full md:max-w-5xl flex items-center justify-between sticky self-start lg:top-0 lg:h-20 px-5 z-20 lg:bg-white mx-auto">
-      <div className="flex items-center">
+    <div className="w-[93vw] bg-white border border-neutral-200/60 shadow-sm h-[4.5rem] top-5 backdrop-blur-md rounded-2xl mt-5 mb-4 lg:border-none lg:my-0 lg:w-full md:max-w-5xl flex items-center justify-between sticky self-start lg:top-0 lg:h-20 px-5 z-20 lg:bg-transparent mx-auto">
+      <div className="flex items-center text-left">
         {showBackButton && (
           <Button
             type="button"
             variant="ghost"
             size="icon"
             onClick={handleBack}
-            className="mr-2 [&_svg]:size-6"
+            className="mr-2 [&_svg]:size-5 hover:bg-neutral-100 rounded-xl"
           >
             <ChevronLeft />
           </Button>
         )}
 
         {pageTitle === "Overview" && (
-          <GalleryVerticalEnd className="size-6 mr-3 ml-2 opacity-0 lg:opacity-100" />
+          <LayoutDashboard className="size-5 mr-2.5 text-neutral-800 hidden lg:block" />
         )}
-        <span className="text-xl md:text-2xl font-bold hidden sm:block">
+        <span className="text-lg md:text-xl font-black text-neutral-900 uppercase tracking-tight pl-1">
           {pageTitle}
         </span>
       </div>
@@ -65,9 +64,9 @@ export default function ProfileHeader() {
         <Link href="/services">
           <Button
             type="button"
-            className="bg-[#5f60b9] hover:bg-[#5f60b9]/90 h-9 px-3 lg:px-4 lg:h-10"
+            className="bg-black hover:bg-neutral-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider h-10 px-4 shadow-sm flex items-center gap-1.5"
           >
-            <CalendarPlus className="h-4 w-4" />
+            <CalendarPlus className="h-4 w-4 text-emerald-400" />
             <span className="hidden sm:inline">Explore Services</span>
             <span className="sm:hidden">Services</span>
           </Button>
@@ -77,9 +76,9 @@ export default function ProfileHeader() {
           <Button
             type="button"
             variant="outline"
-            className="h-9 px-3 lg:px-4 lg:h-10"
+            className="border-neutral-200 hover:bg-neutral-50 rounded-xl text-xs font-bold uppercase tracking-wider h-10 px-4 flex items-center gap-1.5"
           >
-            <SquareArrowOutUpRight />
+            <SquareArrowOutUpRight className="h-4 w-4" />
             Home
           </Button>
         </Link>

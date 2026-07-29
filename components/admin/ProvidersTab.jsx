@@ -606,13 +606,13 @@ const ProvidersTab = () => {
                             Type
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Receive from Qproz
+                            Receive from ProHive
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Pay to Qproz
+                            Pay to ProHive
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Settled by Qproz
+                            Settled by ProHive
                           </th>
                           <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Settled by SP
@@ -670,7 +670,7 @@ const ProvidersTab = () => {
                                       : "bg-gray-100 text-gray-800"
                                   }`}
                                 >
-                                  {log.type}
+                                  {log.type === "Settled by Qproz" ? "Settled by ProHive" : log.type}
                                 </span>
                               </td>
                               <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">

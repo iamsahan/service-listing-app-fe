@@ -6,7 +6,7 @@ const {
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://qproz.com",
+  siteUrl: "https://prohive.com",
   generateRobotsTxt: true,
   sitemapSize: 50000, // Max URLs
   changefreq: "weekly", // Default change frequency

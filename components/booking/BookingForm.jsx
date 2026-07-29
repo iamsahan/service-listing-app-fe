@@ -23,7 +23,7 @@ import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import BookingAddressValidator from "./BookingAdressValidator";
-import { CircleAlert, MapPin, Plus } from "lucide-react";
+import { CircleAlert, MapPin, Plus, Calendar, Clock } from "lucide-react";
 import LocationFlow from "../maps/LocationFlow";
 import AddressSelector from "./AddressSelector";
 import { Button } from "../ui/button";
@@ -79,7 +79,6 @@ const BookingForm = forwardRef(
       const nowMinutes = now.getHours() * 60 + now.getMinutes();
       const cutoffMinutes = nowMinutes + 60; // 1-hour buffer
 
-      // If cutoff exceeds end of day, no slots should be shown
       if (cutoffMinutes >= 24 * 60) return [];
 
       return slots.filter((slot) => {
@@ -156,8 +155,9 @@ const BookingForm = forwardRef(
       [selectedItems, bookingDetails.startTime, toast, filterPastTimeSlots],
     );
 
-    const debouncedFetch = useCallback(debounce(fetchAvailableTimeSlots, 300), [
-      fetchAvailableTimeSlots,
+    const _fetchAvailableTimeSlots = fetchAvailableTimeSlots;
+    const debouncedFetch = useCallback(debounce(_fetchAvailableTimeSlots, 300), [
+      _fetchAvailableTimeSlots,
     ]);
 
     const handleInputChange = (field, value) => {
@@ -332,31 +332,26 @@ const BookingForm = forwardRef(
       today.setHours(0, 0, 0, 0);
       date.setHours(0, 0, 0, 0);
 
-      // Only allow today and next 7 days
       const maxDate = new Date(today);
       maxDate.setDate(today.getDate() + 7);
 
       return date < today || date > maxDate;
     };
 
-    // Generate array of next 8 days (today + 7 future days)
-    // If past 7-30 PM, skip today
     const getAvailableDates = () => {
       const dates = [];
       const now = new Date();
       const cutoffHour = 19;
       const cutoffMinute = 30;
 
-      // offset
       let startOffset = 0;
       if (
         now.getHours() > cutoffHour ||
         (now.getHours() === cutoffHour && now.getMinutes() >= cutoffMinute)
       ) {
-        startOffset = 1; // skip today
+        startOffset = 1;
       }
 
-      // return 8 days
       for (let i = startOffset; i < startOffset + 8; i++) {
         const date = new Date(now);
         date.setDate(now.getDate() + i);
@@ -378,132 +373,137 @@ const BookingForm = forwardRef(
       } else if (date.toDateString() === tomorrow.toDateString()) {
         return "Tomorrow";
       } else {
-        return format(date, "EEE, MMM dd");
+        return format(date, "EEE");
       }
     };
 
     return (
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card className="border-none bg-muted/75">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">
+        <Card className="border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white overflow-hidden text-left">
+          <CardHeader className="border-b border-neutral-100 p-6">
+            <CardTitle className="text-xl font-black text-neutral-900 uppercase tracking-tight">
               Booking Details
             </CardTitle>
-
-            <p className="text-sm text-muted-foreground">
-              Fill in the details below to schedule your service.
+            <p className="text-xs text-neutral-500 mt-1">
+              Select date, time slot, and saved address to finalize scheduling.
             </p>
           </CardHeader>
 
-          <CardContent className="space-y-6 px-6 pb-6">
-            {/* --- Error Display --- */}
+          <CardContent className="space-y-6 p-6">
+            {/* Error alerts */}
             {validationError && (
               <Alert
                 variant="destructive"
-                className="border-none bg-destructive/5"
+                className="border-none bg-red-50 text-red-800 rounded-2xl"
               >
-                <AlertDescription className="flex gap-2 items-center">
-                  <CircleAlert className="size-4" /> {validationError}
+                <AlertDescription className="flex gap-2 items-center text-xs font-bold">
+                  <CircleAlert className="size-4 text-red-600 shrink-0" />
+                  {validationError}
                 </AlertDescription>
               </Alert>
             )}
 
-            {/* --- Schedule Section --- */}
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <label className="text-sm font-medium">Select Date</label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {availableDates.map((date, index) => {
-                    const isSelected =
-                      bookingDetails.bookingDate &&
-                      date.toDateString() ===
-                        bookingDetails.bookingDate.toDateString();
-                    const dateStr = date.toISOString().split("T")[0];
+            {/* Date selection grid */}
+            <div className="space-y-3">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-neutral-500 pl-1 flex items-center gap-1.5">
+                <Calendar className="size-3.5 text-emerald-500" />
+                Select Date
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {availableDates.map((date) => {
+                  const isSelected =
+                    bookingDetails.bookingDate &&
+                    date.toDateString() ===
+                      bookingDetails.bookingDate.toDateString();
+                  const dateStr = date.toISOString().split("T")[0];
 
-                    return (
-                      <button
-                        key={dateStr}
-                        type="button"
-                        onClick={() => handleInputChange("bookingDate", date)}
-                        className={`p-3 rounded-lg border text-center transition-all duration-200 ${
-                          isSelected
-                            ? "bg-[#5f60b9]/5 text-[var(--color-primary)] border-[var(--color-primary)]"
-                            : "bg-white border-gray-200 hover:border-[#5f60b9]/50 hover:bg-[#5f60b9]/5"
-                        }`}
-                      >
-                        <div className="text-xs font-medium opacity-75 mb-1">
-                          {formatDateLabel(date)}
-                        </div>
-                        <div className="text-lg font-bold notranslate">
-                          {date.getDate()}
-                        </div>
-                        <div className="text-xs opacity-75">
-                          {format(date, "MMM")}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Select Time Slot</label>
-                <Select
-                  onValueChange={(value) =>
-                    handleInputChange("startTime", value)
-                  }
-                  value={bookingDetails.startTime}
-                >
-                  <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Choose a time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {isLoadingSlots ? (
-                      <SelectItem value="loading" disabled>
-                        Loading...
-                      </SelectItem>
-                    ) : filteredTimeSlots.length > 0 ? (
-                      filteredTimeSlots.map((time) => (
-                        <SelectItem
-                          key={time}
-                          value={time}
-                          className="notranslate"
-                        >
-                          {time}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="none" disabled>
-                        No available slots
-                      </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
+                  return (
+                    <button
+                      key={dateStr}
+                      type="button"
+                      onClick={() => handleInputChange("bookingDate", date)}
+                      className={`p-3.5 rounded-2xl border text-center transition-all duration-250 flex flex-col items-center justify-center ${
+                        isSelected
+                          ? "bg-emerald-50/50 text-emerald-800 border-emerald-500 ring-1 ring-emerald-400"
+                          : "bg-white border-neutral-200/70 hover:border-emerald-300 hover:bg-emerald-50/10 text-neutral-700"
+                      }`}
+                    >
+                      <div className="text-[10px] font-bold uppercase tracking-wide opacity-80 mb-1">
+                        {formatDateLabel(date)}
+                      </div>
+                      <div className="text-xl font-black tracking-tight notranslate">
+                        {date.getDate()}
+                      </div>
+                      <div className="text-[10px] font-extrabold uppercase tracking-wider opacity-85">
+                        {format(date, "MMM")}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* --- Address Input --- */}
+            {/* Time Slot select */}
             <div className="space-y-3">
-              <label className="text-sm font-medium text-gray-900">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-neutral-500 pl-1 flex items-center gap-1.5">
+                <Clock className="size-3.5 text-emerald-500" />
+                Select Time Slot
+              </label>
+              <Select
+                onValueChange={(value) =>
+                  handleInputChange("startTime", value)
+                }
+                value={bookingDetails.startTime}
+              >
+                <SelectTrigger className="h-12 rounded-xl border-neutral-200/80 focus:ring-emerald-500/20 text-xs font-bold text-neutral-800">
+                  <SelectValue placeholder="Choose a time" />
+                </SelectTrigger>
+                <SelectContent className="bg-white rounded-xl shadow-lg border border-neutral-200/50">
+                  {isLoadingSlots ? (
+                    <SelectItem value="loading" disabled className="text-xs font-bold">
+                      Loading...
+                    </SelectItem>
+                  ) : filteredTimeSlots.length > 0 ? (
+                    filteredTimeSlots.map((time) => (
+                      <SelectItem
+                        key={time}
+                        value={time}
+                        className="notranslate text-xs font-bold"
+                      >
+                        {time}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled className="text-xs font-bold">
+                      No available slots
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Service Address trigger panel */}
+            <div className="space-y-3">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-neutral-500 pl-1 flex items-center gap-1.5">
+                <MapPin className="size-3.5 text-emerald-500" />
                 Service Address
               </label>
 
-              {/* Trigger */}
               <div
                 onClick={() => setIsAddressSelectorOpen(true)}
-                className="group relative overflow-hidden rounded-xl bg-white border border-gray-200 hover:border-[#5f60b9]/30 p-4 cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50"
+                className="group relative overflow-hidden rounded-2xl bg-white border border-neutral-200/80 hover:border-emerald-500/30 p-4 cursor-pointer transition-all duration-300 hover:shadow-md"
               >
                 {bookingDetails.serviceAddress ? (
-                  <div className="flex flex-col lg:flex-row items-start gap-3">
-                    <div className="size-10 rounded-xl bg-gradient-to-br from-[#5f60b9]/10 to-[#7c7ce6]/10 border border-[#5f60b9]/10 flex items-center justify-center group-hover:border-[#5f60b9]/20 group-hover:bg-gradient-to-br group-hover:from-[#5f60b9]/15 group-hover:to-[#7c7ce6]/15 transition-all duration-300">
-                      <MapPin className="size-4 text-[#5f60b9]" />
+                  <div className="flex flex-col lg:flex-row items-start gap-3 relative z-10">
+                    <div className="size-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                      <MapPin className="size-4.5 text-emerald-500" />
                     </div>
 
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 mb-1 capitalize">
+                    <div className="flex-1 min-w-0 pr-12 text-left">
+                      <p className="font-extrabold text-neutral-900 text-xs uppercase tracking-wide mb-1 capitalize">
                         {bookingDetails.type || "Selected Address"}
                       </p>
-                      <p className="text-sm text-gray-600 leading-relaxed break-words">
+                      <p className="text-xs text-neutral-500 leading-relaxed font-semibold">
                         {bookingDetails.serviceAddress}
                       </p>
                     </div>
@@ -511,48 +511,45 @@ const BookingForm = forwardRef(
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-[#5f60b9] hover:bg-[#5f60b9]/10"
+                      className="absolute right-0 top-1/2 -translate-y-1/2 text-xs font-bold uppercase tracking-wider text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50/50 rounded-lg px-2.5 h-8"
                     >
                       Change
                     </Button>
                   </div>
                 ) : (
-                  /* Empty State Placeholder */
-                  <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200/80 border border-gray-200/50 flex items-center justify-center group-hover:border-[#5f60b9]/20 group-hover:bg-gradient-to-br group-hover:from-[#5f60b9]/5 group-hover:to-[#7c7ce6]/5 transition-all duration-300">
-                      <Plus className="size-4 text-gray-400 group-hover:text-[#5f60b9] transition-colors" />
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="size-10 rounded-xl bg-neutral-50 border border-neutral-100 flex items-center justify-center shrink-0">
+                      <Plus className="size-4.5 text-neutral-400 group-hover:text-emerald-500 transition-colors" />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-600 group-hover:text-gray-900 transition-colors">
+                    <div className="flex-1 text-left">
+                      <p className="font-extrabold text-xs text-neutral-700 group-hover:text-neutral-900 transition-colors uppercase tracking-wider">
                         Select address
                       </p>
-                      <p className="text-xs text-gray-400 group-hover:text-gray-500 transition-colors hidden sm:block">
-                        Choose from saved addresses or add new
+                      <p className="text-[10px] text-neutral-400 font-bold group-hover:text-neutral-500 transition-colors hidden sm:block">
+                        Choose from saved addresses or add new location
                       </p>
                     </div>
-                    <div className="text-xs text-[#5f60b9] font-medium opacity-0 group-hover:opacity-100 transition-all duration-200">
-                      Choose →
+                    <div className="text-xs text-emerald-600 font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-all duration-200">
+                      Choose &rarr;
                     </div>
                   </div>
                 )}
-
-                {/* Subtle hover effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#5f60b9]/0 via-[#5f60b9]/1 to-[#5f60b9]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             </div>
 
-            {/* --- Notes Section --- */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">
+            {/* Special Instructions text area */}
+            <div className="space-y-3">
+              <label className="text-xs font-extrabold uppercase tracking-wider text-neutral-500 pl-1">
                 Special Instructions
               </label>
               <Textarea
-                placeholder="Any special instructions for the provider..."
+                placeholder="Any specific requests or directions for the service expert..."
                 value={bookingDetails.customerNotes}
                 onChange={(e) =>
                   handleInputChange("customerNotes", e.target.value)
                 }
-                rows={6}
+                rows={5}
+                className="rounded-xl border-neutral-200/80 text-xs font-medium focus:ring-emerald-500/20"
               />
             </div>
           </CardContent>
@@ -566,13 +563,13 @@ const BookingForm = forwardRef(
           onSave={handleOnSave}
         />
 
-        {/* --- Address Selection Dialog --- */}
         <AddressSelector
           isOpen={isAddressSelectorOpen}
           onClose={() => setIsAddressSelectorOpen(false)}
           addresses={savedAddresses}
           onSelect={handleAddressSelect}
         />
+
         <Dialog
           open={isCityMismatchDialogOpen}
           onOpenChange={(state) => {
@@ -595,5 +592,4 @@ const BookingForm = forwardRef(
 );
 
 BookingForm.displayName = "BookingForm";
-
 export default BookingForm;

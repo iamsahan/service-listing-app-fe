@@ -1,6 +1,6 @@
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import AuthWrapper from "@components/wrappers/AuthWrapper";
-import { Toaster } from "@components/ui/toaster";
+import { Toaster } from "sonner";
 import { GA_MEASUREMENT_ID } from "@/lib/gtag";
 
 import { Inter } from "next/font/google";
@@ -58,7 +58,7 @@ export default async function RootLayout({ children }) {
 
               <main className="app">
                 {children}
-                <Toaster />
+                <Toaster richColors closeButton position="top-right" />
               </main>
               <ScrollToTopButton />
             </Providers>

@@ -46,18 +46,18 @@ export default function CreateTicketForm({
 
   return (
     <div className="flex-1 flex flex-col bg-white h-full lg:border lg:rounded-lg">
-      <div className="p-4 border-b bg-gray-50 text-gray-700 flex items-center justify-between gap-4 rounded-t-lg">
+      <div className="p-4 border-b bg-neutral-50 text-neutral-800 flex items-center justify-between gap-4 rounded-t-2xl">
         <div className="flex items-center gap-3">
           {onBack && (
             <button
               onClick={onBack}
-              className="text-gray-500 hover:text-gray-700 p-1 rounded transition"
+              className="text-neutral-500 hover:text-black p-1 rounded-lg transition hover:bg-neutral-200/50"
               aria-label="Back"
             >
-              <ChevronLeft />
+              <ChevronLeft className="size-5" />
             </button>
           )}
-          <span className="text-lg font-semibold">New Chat</span>
+          <span className="text-sm font-extrabold uppercase tracking-wider text-neutral-850">Create Support Ticket</span>
         </div>
       </div>
 
@@ -106,15 +106,15 @@ export default function CreateTicketForm({
           <div className="p-4">
             <div
               onClick={() => setShowDialog(true)}
-              className="w-full border-2 border-dashed border-gray-300 rounded-md p-4 text-sm text-gray-500 hover:border-blue-500 hover:bg-blue-50 cursor-pointer transition flex items-center gap-3 select-none"
+              className="w-full border-2 border-dashed border-neutral-200 rounded-2xl p-5 text-sm text-neutral-500 hover:border-[#10b981] hover:bg-emerald-50/30 cursor-pointer transition-all flex items-center gap-3.5 select-none"
             >
-              <Plus className="w-5 h-5 text-blue-500" />
-              <div className="flex flex-col">
-                <span className="font-medium text-gray-600">
-                  Assign a Booking
+              <Plus className="w-5 h-5 text-[#10b981]" />
+              <div className="flex flex-col text-left">
+                <span className="font-extrabold text-neutral-700 text-xs uppercase tracking-wide">
+                  Assign a Booking ID
                 </span>
-                <span className="text-xs text-gray-400">
-                  Click to choose from list
+                <span className="text-[10px] text-neutral-400 font-medium">
+                  Select an existing order from your account history
                 </span>
               </div>
             </div>
@@ -128,29 +128,29 @@ export default function CreateTicketForm({
           >
             <div className="flex-1 space-y-6 p-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
+                <label className="block text-xs font-black uppercase tracking-wider text-neutral-600 mb-1.5 text-left">
+                  Ticket Subject / Title
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition"
+                  className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-xs placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#10b981]/25 focus:border-[#10b981] transition-all bg-neutral-50"
                   placeholder="e.g. Issue with payment"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Message
+                <label className="block text-xs font-black uppercase tracking-wider text-neutral-600 mb-1.5 text-left">
+                  Detailed Message
                 </label>
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
                   rows={4}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-500 transition"
+                  className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-xs placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-[#10b981]/25 focus:border-[#10b981] transition-all bg-neutral-50"
                   placeholder="Describe your issue..."
                 />
               </div>
@@ -169,10 +169,10 @@ export default function CreateTicketForm({
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#5f60b9] text-white px-5 py-3 rounded flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-black text-white px-5 py-4 rounded-xl flex items-center justify-center gap-2 disabled:opacity-50 text-xs font-black uppercase tracking-wider hover:bg-neutral-800 transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
               >
-                <SendHorizonal className="w-5 h-5" />
-                Submit Ticket
+                <SendHorizonal className="w-4 h-4 text-emerald-400" />
+                Submit Support Ticket
               </button>
             </div>
           </form>

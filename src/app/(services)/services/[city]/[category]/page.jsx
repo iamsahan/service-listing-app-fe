@@ -12,15 +12,15 @@ export async function generateMetadata({ params }) {
   const formattedCategory = formatCategory(category);
 
   return {
-    title: `${formattedCategory} Services in ${city} – QProz`,
+    title: `${formattedCategory} Services in ${city} – ProHive`,
     description: `Book trusted ${formattedCategory} services in ${city}. Find verified professionals for ${formattedCategory}, repairs, and more.`,
     openGraph: {
-      title: `${formattedCategory} Services in ${city} – QProz`,
+      title: `${formattedCategory} Services in ${city} – ProHive`,
       description: `Hire verified professionals for ${formattedCategory} services in ${city}. Fast booking, guaranteed satisfaction.`,
       images: ["/assets/images/swiper-1.jpg"],
     },
     alternates: {
-      canonical: `https://qproz.com/services/${city}/${category}`,
+      canonical: `https://prohive.com/services/${city}/${category}`,
     },
   };
 }

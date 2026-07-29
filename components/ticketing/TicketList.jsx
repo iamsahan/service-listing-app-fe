@@ -35,9 +35,9 @@ export default function TicketList({
       <div
         key={ticket.ticket_id}
         onClick={() => onSelect(ticket.ticket_id)}
-        className={`cursor-pointer px-4 py-3 transition-colors rounded-md hover:bg-gray-50 ${
-          selectedId === ticket.ticket_id ? "bg-[#5f60b9]/10" : ""
-        } ${!isLast ? "border-b border-gray-200" : ""}`}
+        className={`cursor-pointer px-4 py-3 transition-colors hover:bg-neutral-50 ${
+          selectedId === ticket.ticket_id ? "bg-emerald-50/50 border-l-4 border-l-[#10b981] font-semibold" : ""
+        } ${!isLast ? "border-b border-neutral-100" : ""}`}
       >
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
@@ -87,8 +87,8 @@ export default function TicketList({
           }
         )}
       >
-        <MessageSquare className="text-[#5f60b9] stroke-2" />
-        <h2 className="text-gray-800">Contact Support</h2>
+        <MessageSquare className="text-[#10b981] stroke-2" />
+        <h2 className="text-gray-800">Support Conversations</h2>
       </div>
 
       <div className="flex-1 overflow-y-auto divide-y divide-gray-100">
@@ -148,10 +148,10 @@ export default function TicketList({
       >
         <button
           onClick={() => onSelect("new")}
-          className="w-full flex gap-2 items-center justify-center text-sm font-medium py-3 bg-[#5f60b9] text-white rounded-md hover:bg-[#4a4bb0] transition-colors"
+          className="w-full flex gap-2 items-center justify-center text-xs font-black uppercase tracking-wider py-4 bg-black text-white rounded-xl hover:bg-neutral-800 transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
         >
-          <Edit className="size-5" />
-          New Chat
+          <Edit className="size-4" />
+          Create New Chat
         </button>
       </div>
     </div>

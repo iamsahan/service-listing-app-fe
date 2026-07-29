@@ -28,7 +28,6 @@ import OrderProcessBanner from "./OrderProcessBanner";
 import { useMobile } from "@/src/hooks/useMobile";
 import { cartService } from "@/api/cartService";
 import QprozLoader from "../QprozLoader";
-import { Sparkles } from "lucide-react";
 import Banner from "../Banner";
 
 export function SubCategoryDetailsPage({
@@ -342,6 +341,7 @@ export function SubCategoryDetailsPage({
       <div className="px-5 pt-2 md:px-8 sm:pt-6 min-h-screen">
         <div className="container mx-auto">
           <div className="xl:grid xl:grid-cols-12 flex flex-col gap-8">
+            {/* Left Column Sidenav index list */}
             <SubCategoryDetailsSidenav
               cityId={data.cityId}
               serviceTypes={data.serviceTypes}
@@ -349,6 +349,7 @@ export function SubCategoryDetailsPage({
               handleBack={handleBack}
             />
 
+            {/* Main services listing + Cart sections */}
             <div className="xl:col-span-9 flex flex-col xl:flex-row gap-8">
               <div className="flex-1">
                 {/* Banner */}
@@ -361,18 +362,19 @@ export function SubCategoryDetailsPage({
                 )}
 
                 {/* Service List */}
-                <div className="flex-1 space-y-5">
+                <div className="flex-1 space-y-10">
                   {data.serviceTypes
                     .sort((a, b) => a.display_order - b.display_order)
                     .map((type, index) => (
                       <div
                         key={type.type_id}
                         id={type.name.toLowerCase().replace(/\s+/g, "-")}
-                        className="space-y-4"
+                        className="space-y-6 text-left scroll-mt-24"
                       >
-                        <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-4">
-                          <Sparkles className="text-[var(--color-primary)] size-5" />
-                          <Label className="text-lg font-semibold">
+                        {/* Unified header layout with border and status dot */}
+                        <div className="flex items-center gap-2.5 border-b border-neutral-100 pb-3 mt-4">
+                          <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+                          <Label className="text-xl font-black text-neutral-900 uppercase tracking-tight">
                             {type.name}
                           </Label>
                         </div>
@@ -395,16 +397,12 @@ export function SubCategoryDetailsPage({
                             onQuantityChange={handleQuantityChange}
                           />
                         </div>
-
-                        {index < data.serviceTypes.length - 1 && (
-                          <div className="h-1 rounded-lg bg-muted" />
-                        )}
                       </div>
                     ))}
                 </div>
               </div>
 
-              {/* Cart */}
+              {/* Right Column Cart panel */}
               <div className="w-full max-w-sm sticky top-28 self-start z-10">
                 <Cart
                   selectedItems={selectedItems}
@@ -420,15 +418,15 @@ export function SubCategoryDetailsPage({
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Details Description Modal Dialog */}
       <Dialog open={isOpen} onOpenChange={(open) => !open && closeModal()}>
-        <DialogContent className="w-full max-w-md p-6 rounded-md shadow-xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Description</DialogTitle>
+        <DialogContent className="w-full max-w-md p-6 bg-white rounded-3xl shadow-xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-black text-neutral-950 text-xl">Description</DialogTitle>
             <DialogClose />
           </DialogHeader>
           <div
-            className="text-gray-600 text-sm mt-2"
+            className="text-gray-600 text-sm mt-4 text-left leading-relaxed"
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(modalDescription || ""),
             }}

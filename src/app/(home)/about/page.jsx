@@ -2,299 +2,254 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { FaUsers, FaMoneyBillWave, FaClock } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import {
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  Users,
+  Building,
+  Target,
+  ArrowUpRight,
+  ChevronRight,
+  TrendingUp,
+} from "lucide-react";
+import SectionBadge from "@/components/home/SectionBadge";
 
 const Page = () => {
   const router = useRouter();
+
+  const values = [
+    {
+      icon: <ShieldCheck className="size-6 text-emerald-600" />,
+      title: "Rigorously Vetted",
+      desc: "Every partner undergoes severe background screening, certifications audit, and live face verification before listing.",
+    },
+    {
+      icon: <Zap className="size-6 text-amber-500 animate-pulse" />,
+      title: "Instant Schedules",
+      desc: "No back-and-forth negotiations. Check real-time availability calendar feeds and book slots in under 60 seconds.",
+    },
+    {
+      icon: <TrendingUp className="size-6 text-emerald-600" />,
+      title: "Escrow Protection",
+      desc: "Funds are securely locked via Razorpay commission flow and disbursed to the provider only when you confirm complete satisfaction.",
+    },
+  ];
+
+  const milestones = [
+    {
+      year: "2024",
+      title: "Identifying the Gap",
+      desc: "Started as a regional initiative in Hyderabad to bridge the divide between top-tier specialists and households.",
+    },
+    {
+      year: "2025",
+      title: "Building Safe Frameworks",
+      desc: "Implemented our trademark provider escrow system and expanded verified booking structures to 5+ major metro areas.",
+    },
+    {
+      year: "2026",
+      title: "Rebranding to ProHive",
+      desc: "Launched a complete visual and security overhaul, establishing our position as the market's most trusted home care hub.",
+    },
+  ];
+
   return (
-    <div className="bg-gray-100 text-gray-900 overflow-hidden">
+    <div className="bg-white text-neutral-900 min-h-screen">
+      <style>{`
+        .bg-grid-pattern {
+          background-size: 40px 40px;
+          background-image: linear-gradient(to right, #f3f4f6 1px, transparent 1px),
+                            linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
+        }
+        .hero-clip {
+          clip-path: ellipse(140% 100% at 50% 0%);
+        }
+      `}</style>
+
       {/* Hero Section */}
-      <section
-        className="relative w-full pb-28 pt-24 lg:pb-32 lg:pt-[9.5rem] flex flex-col justify-center items-center text-center bg-cover"
-        style={{ backgroundImage: "url('/assets/images/about-bg.jpg')" }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-        <div className="relative z-10 max-w-5xl space-y-6 px-5">
-          <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-lg text-white"
-          >
-            India’s Best{" "}
-            <span className="text-blue-400">Home Service Marketplace</span>
-          </motion.h1>
+      <section className="relative pt-32 pb-24 overflow-hidden border-b border-neutral-100 bg-gradient-to-b from-neutral-50 via-white to-white bg-grid-pattern hero-clip">
+        {/* Glow Shapes */}
+        <div className="absolute top-[-80px] right-[20%] w-[380px] h-[380px] bg-emerald-100/40 rounded-full blur-[80px]" />
+        <div className="absolute bottom-[10%] left-[10%] w-[350px] h-[350px] bg-amber-100/30 rounded-full blur-[90px]" />
 
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-gray-200 text-sm sm:text-base md:text-lg max-w-2xl mx-auto"
-          >
-            Find trusted professionals for home maintenance, beauty, appliance
-            repairs, and more! We connect customers with skilled experts across
-            major cities in India for hassle-free service.
-          </motion.p>
+        <div className="container mx-auto px-6 max-w-7xl relative z-10 text-center space-y-6">
+          <div className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold uppercase tracking-wider text-emerald-800 shadow-sm animate-pulse">
+            Empowering Daily Living
+          </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.5 }}
-            className="text-gray-200 text-sm sm:text-base md:text-lg max-w-2xl mx-auto"
-          >
-            Serving major cities: Mumbai, Delhi, Bangalore, Chennai, Hyderabad,
-            Kolkata, Pune, and more!
-          </motion.p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-neutral-900 tracking-tight leading-[1.1]">
+            We build local infrastructure <br className="hidden md:block" />
+            for <span className="bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-500 bg-clip-text text-transparent">trusted services</span>
+          </h1>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2 }}
-            className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <p className="text-neutral-500 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+            ProHive is a premium technology platform that streamlines how households book verified trade, repair, and lifestyle professionals.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
-              className="bg-indigo-500 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transition-transform transform hover:scale-105"
               onClick={() => router.push("/services")}
+              className="w-full sm:w-auto px-7 py-3.5 bg-black text-white hover:bg-neutral-800 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md"
             >
               Explore Services
+              <ArrowUpRight className="size-4 text-emerald-400" />
             </button>
             <button
-              className="bg-white text-indigo-500 hover:text-blue-700 px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transition-transform transform hover:scale-105"
               onClick={() => router.push("/registration/provider")}
+              className="w-full sm:w-auto px-7 py-3.5 bg-neutral-100 hover:bg-neutral-200 text-black rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300"
             >
-              Become a Service Partner
+              Become a Provider
             </button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Our Mission & Vision */}
-      <section className="py-20 px-6 container mx-auto">
-        <div className="flex flex-col lg:flex-row items-center gap-16">
-          {/* Text Content */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="md:w-1/2 text-center md:text-left"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Our Mission & Vision
+      {/* Core Values section */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left detail Column */}
+            <div className="lg:col-span-5 space-y-6 text-left">
+              <SectionBadge>Our Philosophy</SectionBadge>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+                Rebuilding Trust in Home Services
+              </h2>
+              <p className="text-neutral-500 leading-relaxed text-sm sm:text-base">
+                For too long, booking local help has meant dealing with unpredictable pricing, unreliable timings, and unverified credentials. ProHive was built to solve this by creating transparent safety checks for every project.
+              </p>
+              <div className="p-4 bg-emerald-50/50 border border-emerald-100/50 rounded-2xl flex items-start gap-3">
+                <Target className="size-5 text-emerald-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="font-extrabold text-sm text-neutral-800">Our Core Vision</h4>
+                  <p className="text-xs text-neutral-500 leading-relaxed">To make home service bookings completely hassle-free, secure, and standardized across India.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right values items Column */}
+            <div className="lg:col-span-7 space-y-6">
+              {values.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 bg-neutral-50 border border-neutral-200/50 rounded-2xl flex flex-col sm:flex-row items-start gap-4 hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="size-11 rounded-xl bg-white border border-neutral-150 flex items-center justify-center shrink-0 shadow-sm">
+                    {item.icon}
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <h3 className="font-extrabold text-base text-neutral-900">{item.title}</h3>
+                    <p className="text-neutral-500 text-xs sm:text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Growth Timeline */}
+      <section className="py-24 bg-neutral-50 border-t border-b border-neutral-100">
+        <div className="container mx-auto px-6 max-w-7xl text-center space-y-12">
+          <div className="space-y-4">
+            <SectionBadge>Timeline</SectionBadge>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Our Journey</h2>
+            <p className="text-neutral-500 text-sm max-w-md mx-auto">
+              How we scaled from a regional framework to a trusted marketplace.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mt-12 text-left relative">
+            {milestones.map((m, idx) => (
+              <div
+                key={idx}
+                className="p-8 bg-white border border-neutral-200 rounded-3xl space-y-4 hover:shadow-md transition-all duration-300 relative group overflow-hidden"
+              >
+                <div className="absolute right-0 top-0 w-24 h-24 bg-neutral-50 text-neutral-100 font-black text-6xl flex items-center justify-center select-none group-hover:text-emerald-50 transition-colors z-0">
+                  {idx + 1}
+                </div>
+                <div className="relative z-10 space-y-3">
+                  <span className="inline-block px-3 py-1 bg-emerald-50 border border-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                    {m.year}
+                  </span>
+                  <h3 className="text-lg font-extrabold text-neutral-900">{m.title}</h3>
+                  <p className="text-neutral-500 text-xs sm:text-sm leading-relaxed">{m.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Image Spotlight Section */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Story Image Panel */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-[420px] aspect-[4/3] rounded-[2.5rem] overflow-hidden border border-neutral-200 shadow-xl group">
+                <Image
+                  src="/assets/images/our-story.jpg"
+                  alt="ProHive community"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+            </div>
+
+            {/* Story Text details */}
+            <div className="lg:col-span-7 text-left space-y-6">
+              <SectionBadge>The Story</SectionBadge>
+              <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+                Empowering Local Communities
+              </h2>
+              <p className="text-neutral-500 text-sm sm:text-base leading-relaxed">
+                ProHive started with a simple belief: that everyone deserves fair employment and verified assistance. By enabling independent trade partners to build digital credentials, check customer logs, and receive secure payouts on time, we provide them with high-end tools to build their businesses.
+                <br />
+                <br />
+                Today, ProHive empowers hundreds of certified specialists across India. We handle the bookings, validation, mapping, and insurance payouts, allowing you to relax while specialists carry out quality work with full convenience.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Corporate Call To Action Banner */}
+      <section className="py-20 bg-white border-t border-neutral-100">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="p-8 md:p-16 bg-neutral-900 rounded-[2.5rem] text-white text-center space-y-8 relative overflow-hidden shadow-2xl">
+            <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]" />
+            <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-amber-500/10 rounded-full blur-[100px]" />
+            
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight relative z-10 leading-tight">
+              Ready to Settle Your <br /> Next Home Project?
             </h2>
 
-            <p className="mt-10 text-gray-600">
-              Our mission is to revolutionize home services by seamlessly
-              connecting skilled professionals with customers in need of
-              reliable, high-quality assistance. We strive to eliminate the
-              hassle of finding trustworthy service providers by offering a{" "}
-              transparent, efficient, and technology-driven platform.
-              <br />
-              <br />
-              Whether it's home maintenance, beauty services, appliance repairs,
-              or deep cleaning, we ensure that every service is delivered with
-              expertise, punctuality, and professionalism. By partnering with
-              highly trained and verified professionals, we empower both service
-              providers and homeowners, creating opportunities for skilled
-              workers while enhancing customer convenience.
-              <br />
-              <br />
-              Our vision is to bridge the service accessibility gap across major
-              cities and rural areas, making top-tier home services available to
-              everyone. Through our commitment to affordability, trust, and ease
-              of booking, we aim to redefine how people experience home
-              services—making it smoother, safer, and more reliable than ever
-              before.
+            <p className="text-neutral-400 text-sm sm:text-base max-w-xl mx-auto leading-relaxed relative z-10">
+              Find premium home help, beauty, and maintenance professionals on-demand. Become a booking customer today.
             </p>
-          </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.2 }}
-            className="lg:w-2/5"
-          >
-            <Image
-              src="/assets/images/india_map.png"
-              alt="Service Areas in India"
-              width={300}
-              height={250}
-              className="rounded-3xl shadow-lg w-full"
-            />
-          </motion.div>
+            <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+              <button
+                onClick={() => router.push("/services")}
+                className="w-full sm:w-auto bg-white text-black hover:bg-neutral-100 px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:scale-105"
+              >
+                Browse Services
+              </button>
+              <button
+                onClick={() => router.push("/registration/provider")}
+                className="w-full sm:w-auto bg-neutral-800 text-white hover:bg-neutral-700 border border-neutral-700 px-7 py-3.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:scale-105"
+              >
+                Become a Partner
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
-
-      {/* Why Choose Us */}
-      <section className="bg-white py-20 px-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          Why Choose Us?
-        </h2>
-        <div className="grid md:grid-cols-3 gap-10 mt-10 container mx-auto">
-          {[
-            {
-              icon: <FaUsers size={40} className="text-blue-500" />,
-              title: "Expert Professionals",
-              desc: "We connect you with verified, top-rated service providers to guarantee the best results.",
-            },
-            {
-              icon: <FaMoneyBillWave size={40} className="text-green-500" />,
-              title: "Affordable Prices",
-              desc: "Transparent pricing with no hidden costs—premium service at the best price.",
-            },
-            {
-              icon: <FaClock size={40} className="text-yellow-500" />,
-              title: "Quick & Reliable",
-              desc: "Book services in a few clicks and get them delivered on time, without hassle.",
-            },
-          ].map((feature, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              className="p-6 bg-gray-100 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="flex justify-center mb-4">{feature.icon}</div>
-              <h3 className="text-2xl font-bold">{feature.title}</h3>
-              <p className="mt-2 text-gray-600">{feature.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-20 px-6 bg-gray-50">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">
-          How It Works
-        </h2>
-        <div className="grid md:grid-cols-4 gap-10 mt-10 container mx-auto">
-          {[
-            {
-              img: "/assets/images/choose-service.jpg",
-              title: "Choose a Service",
-              desc: "Browse an extensive range of services, from plumbing to salon treatments, **tailored to your needs.**",
-            },
-            {
-              img: "/assets/images/book-appintment.jpg",
-              title: "Book an Appointment",
-              desc: "Schedule a service at your convenience and **get instant confirmation with secure payment options.**",
-            },
-            {
-              img: "/assets/images/provider-arrive.jpg",
-              title: "Provider Arrives & Completes Service",
-              desc: "A verified professional arrives at your location **on time** and completes the service efficiently.",
-            },
-            {
-              img: "/assets/images/relax-enjoy.jpg",
-              title: "Relax & Enjoy",
-              desc: "Sit back and enjoy hassle-free service, knowing everything is handled by experts.",
-            },
-          ].map((process, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              className="relative bg-cover bg-center rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-              style={{
-                backgroundImage: `url(${process.img})`,
-                height: "300px",
-              }}
-            >
-              <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-center px-6">
-                <h4 className="text-xl font-bold text-white">
-                  {process.title}
-                </h4>
-                <p className="mt-2 text-white">{process.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* Our Story */}
-      <section className="py-20 px-6 md:px-16 bg-white">
-        <div className="flex flex-col-reverse md:flex-row items-center gap-10 container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="md:w-2/5"
-          >
-            <Image
-              src="/assets/images/our-story.jpg"
-              alt="Our Story"
-              width={300}
-              height={250}
-              className="rounded-3xl shadow-lg w-full"
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="md:w-1/2 text-center md:text-left"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold">Our Story</h2>
-            <p className="mt-6 text-gray-600">
-              What started as a small initiative to connect skilled workers with
-              customers has grown into India’s leading home service marketplace.
-              We noticed the gap between professionals looking for work and
-              homeowners struggling to find reliable services.
-              <br />
-              <br />
-              With **passion and innovation**, we built a seamless, trusted, and
-              technology-driven platform that empowers both service providers
-              and customers alike. Every day, we bring convenience,
-              affordability, and expertise to thousands of homes.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gray-500 text-white text-center">
-        <motion.h2
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl md:text-4xl font-bold"
-        >
-          Ready to Experience Hassle-Free Services?
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="mt-4 max-w-3xl mx-auto"
-        >
-          Whether you need a quick repair or a relaxing spa session at home, we
-          have you covered. Find your service today or join us as a trusted
-          service provider!
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2 }}
-          className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <button
-            className="bg-white text-black hover:text-indigo-500 px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transition-transform transform hover:scale-105"
-            onClick={() => router.push("/services")}
-          >
-            Explore Services
-          </button>
-          <button
-            className="bg-gray-100 text-black hover:text-indigo-500 px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transition-transform transform hover:scale-105"
-            onClick={() => router.push("/registration/provider")}
-          >
-            Become a Service Partner
-          </button>
-        </motion.div>
       </section>
     </div>
   );

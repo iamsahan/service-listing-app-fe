@@ -14,13 +14,13 @@ const RazorpayPayoutHandler = ({
   onError,
   onClose,
   buttonText = "Proceed to Payment",
-  buttonClass = "bg-[#5f60b9] text-white px-4 py-2",
+  buttonClass = "bg-black hover:bg-neutral-800 text-white px-4 py-2 rounded-lg",
   disabled = false,
   showDebugInfo = false,
   razorpayKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-  companyName = "Qproz",
-  companyLogo = "/logo.png",
-  theme = "#5f60b9",
+  companyName = "ProHive",
+  companyLogo = "/assets/images/prohive_logo.png",
+  theme = "#10b981",
 }) => {
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);

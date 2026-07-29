@@ -132,7 +132,7 @@ const PayoutLogsTab = () => {
             loading={loading}
           />
           <SummaryCard
-            title="QProz Owes"
+            title="ProHive Owes"
             value={summary?.platformOwesCount || summary?.qprozOwesCount}
             loading={loading}
           />
@@ -191,7 +191,7 @@ const PayoutLogsTab = () => {
             className="border rounded-md px-3 py-2 text-sm bg-white"
           >
             <option value="">All</option>
-            <option value="qp_to_sp">QProz Owes</option>
+            <option value="qp_to_sp">ProHive Owes</option>
             <option value="sp_to_qp">Provider Owes</option>
             <option value="balanced">Balanced</option>
           </select>
@@ -437,7 +437,7 @@ const PayoutLogsTab = () => {
                   </h3>
                   <div className="space-y-2">
                     <DetailRow
-                      label="QProz On Hand"
+                      label="ProHive On Hand"
                       value={fmt(selectedRecord.qproz_on_hand_amount)}
                     />
                     <DetailRow
@@ -445,7 +445,7 @@ const PayoutLogsTab = () => {
                       value={fmt(selectedRecord.provider_on_hand_amount)}
                     />
                     <DetailRow
-                      label="QProz Expected Income"
+                      label="ProHive Expected Income"
                       value={fmt(selectedRecord.qproz_expected_income)}
                     />
                     <DetailRow
@@ -453,7 +453,7 @@ const PayoutLogsTab = () => {
                       value={fmt(selectedRecord.provider_expected_income)}
                     />
                     <DetailRow
-                      label="QProz Settlement Balance"
+                      label="ProHive Settlement Balance"
                       value={fmt(selectedRecord.qproz_settlement_balance)}
                     />
                     <DetailRow

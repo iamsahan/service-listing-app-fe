@@ -190,17 +190,17 @@ export default function LocationInitializer() {
   }, []);
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-[9999] overflow-hidden text-center px-4">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#f8fafc] z-[9999] overflow-hidden text-center px-4">
       <Image
-        src="/assets/images/qproz.png"
-        alt="Qproz Logo"
+        src="/assets/images/prohive_logo.png"
+        alt="ProHive Logo"
         width={150}
-        height={100}
-        className="mb-6"
+        height={150}
+        className="mb-6 animate-pulse"
         priority
       />
 
-      <Progress value={progress} className="w-64 h-1.5" />
+      <Progress value={progress} className="w-64 h-1.5 bg-gray-200" />
 
       {/* On failure we immediately reload; no error UI */}
     </div>

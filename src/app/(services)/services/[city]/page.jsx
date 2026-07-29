@@ -5,15 +5,15 @@ export async function generateMetadata({ params }) {
   const cityName = pms?.city;
 
   return {
-    title: `Services in ${cityName} – QProz`,
+    title: `Services in ${cityName} – ProHive`,
     description: `Explore all home services available in ${cityName}. Find trusted professionals for cleaning, repairs, plumbing, electrical, and more.`,
     openGraph: {
-      title: `Services in ${cityName} – QProz`,
+      title: `Services in ${cityName} – ProHive`,
       description: `Book verified home service professionals in ${cityName} for cleaning, repairs, plumbing, electrical work, and more.`,
       images: ["/assets/images/swiper-1.jpg"],
     },
     alternates: {
-      canonical: `https://qproz.com/services/${cityName}`,
+      canonical: `https://prohive.com/services/${cityName}`,
     },
   };
 }

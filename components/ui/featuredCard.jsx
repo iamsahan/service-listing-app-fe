@@ -20,6 +20,20 @@ const FeaturedCard = ({
   onClick,
   onBtnClick,
 }) => {
+  const isValidUrl = (url) => {
+    if (!url || typeof url !== "string") return false;
+    if (url.startsWith("/") || url.startsWith("data:")) return true;
+    try {
+      if (url.startsWith("undefined")) return false;
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const safeImageSrc = isValidUrl(imageSrc) ? imageSrc : "/assets/images/card-1.jpg";
+
   return (
     <div
       role="button"
@@ -33,7 +47,7 @@ const FeaturedCard = ({
       <div className="relative" onClick={onClick}>
         <div className="relative w-[260px] h-[150px] overflow-hidden bg-gray-50">
           <Image
-            src={imageSrc}
+            src={safeImageSrc}
             alt={title || "card image"}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"

@@ -128,13 +128,13 @@ export default function TicketChat({
           {onBack && (
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 p-1 rounded transition"
+              className="text-neutral-500 hover:text-black p-1 rounded-lg transition hover:bg-neutral-200/50"
               aria-label="Back"
             >
-              <ChevronLeft />
+              <ChevronLeft className="size-5" />
             </button>
           )}
-          <span className="text-base">{ticket.title}</span>
+          <span className="text-sm font-extrabold uppercase tracking-wider text-neutral-800">{ticket.title}</span>
         </div>
 
         <div className="flex items-center gap-2">
@@ -198,15 +198,15 @@ export default function TicketChat({
                 <div
                   key={msg.message_id}
                   className={cn(
-                    "max-w-xs md:max-w-sm px-4 py-2 rounded shadow-sm text-sm",
+                    "max-w-xs md:max-w-sm px-4 py-3 rounded-2xl shadow-sm text-xs leading-relaxed",
                     {
-                      "bg-[#5f60b9]/10 self-end text-left": isUser,
-                      "bg-white border self-start text-left": !isUser,
+                      "bg-emerald-50 text-emerald-950 border border-emerald-100/50 self-end text-left rounded-tr-none": isUser,
+                      "bg-white border border-neutral-200 self-start text-left rounded-tl-none": !isUser,
                     }
                   )}
                 >
-                  <p>{msg.message}</p>
-                  <div className="text-xs text-gray-400 mt-1 text-right">
+                  <p className="font-semibold">{msg.message}</p>
+                  <div className="text-[10px] text-neutral-400 mt-1.5 text-right font-medium">
                     {new Date(msg.createdAt).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -231,7 +231,7 @@ export default function TicketChat({
           <input
             ref={inputRef}
             type="text"
-            className="flex-1 border rounded px-3 py-2 focus:outline-none min-w-0"
+            className="flex-1 border border-neutral-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#10b981]/25 focus:border-[#10b981] min-w-0 bg-neutral-50"
             placeholder="Type a message..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -245,11 +245,11 @@ export default function TicketChat({
 
           <button
             onClick={sendMessage}
-            className="bg-[#5f60b9] text-white px-4 py-2 rounded flex gap-2 items-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-black text-white hover:bg-neutral-800 px-5 py-3 rounded-xl flex gap-2 items-center disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-sm hover:shadow-md text-xs font-black uppercase tracking-wider active:scale-95"
             disabled={sending}
           >
             <span className="hidden md:inline">Send</span>
-            <SendHorizonal className="w-4 h-4" />
+            <SendHorizonal className="w-4 h-4 text-emerald-400" />
           </button>
         </div>
       ) : (

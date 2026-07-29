@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,8 @@ import {
   MapPin,
   Eye,
   RefreshCw,
+  Wallet,
+  AlertTriangle,
 } from "lucide-react";
 import {
   Tooltip,
@@ -28,7 +32,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { AccountBalance } from "@mui/icons-material";
 import { formatCurrency } from "@/utils/bookingUtils";
 import { profileAPI } from "@/api/profile";
 import Link from "next/link";
@@ -69,17 +72,16 @@ const ProfileContent = ({ userData, stats }) => {
 
   const getTransactionTypeColor = (type) => {
     const colors = {
-      booking_payment: "bg-blue-100 text-blue-800",
-      booking_refund: "bg-green-100 text-green-800",
-      booking_penalty: "bg-red-100 text-red-800",
-      admin_adjustment: "bg-purple-100 text-purple-800",
-      // Legacy support
-      credit: "bg-green-100 text-green-800",
-      debit: "bg-red-100 text-red-800",
-      refund: "bg-blue-100 text-blue-800",
-      penalty: "bg-orange-100 text-orange-800",
+      booking_payment: "bg-neutral-100 text-neutral-800 border-neutral-200/60",
+      booking_refund: "bg-emerald-50 text-emerald-800 border-emerald-150",
+      booking_penalty: "bg-red-50 text-red-800 border-red-150",
+      admin_adjustment: "bg-purple-50 text-purple-800 border-purple-150",
+      credit: "bg-emerald-50 text-emerald-800 border-emerald-150",
+      debit: "bg-red-50 text-red-850 border-red-150",
+      refund: "bg-emerald-50 text-emerald-800 border-emerald-150",
+      penalty: "bg-amber-50 text-amber-800 border-amber-150",
     };
-    return colors[type] || "bg-gray-100 text-gray-800";
+    return colors[type] || "bg-neutral-50 text-neutral-800 border-neutral-200";
   };
 
   const getTransactionTypeLabel = (type) => {
@@ -92,7 +94,6 @@ const ProfileContent = ({ userData, stats }) => {
     return labels[type] || type?.charAt(0).toUpperCase() + type?.slice(1);
   };
 
-  // Calculate profile completion percentage
   const getProfileCompletion = () => {
     const requiredFields = ["email", "gender", "dob", "mobile", "photo"];
     const optionalFields = ["email_verified", "mobile_verified"];
@@ -107,7 +108,6 @@ const ProfileContent = ({ userData, stats }) => {
 
   const completionPercentage = getProfileCompletion();
 
-  // Get profile status and next steps
   const getProfileStatus = () => {
     if (completionPercentage === 100) return "Complete";
     if (completionPercentage >= 70) return "Almost Complete";
@@ -127,6 +127,21 @@ const ProfileContent = ({ userData, stats }) => {
     return missing;
   };
 
+  const formatLastBookingDate = (booking) => {
+    if (!booking || !booking.created_at) return "No bookings found";
+    try {
+      const date = new Date(booking.created_at);
+      if (isNaN(date.getTime())) return "No bookings found";
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (_) {
+      return "No bookings found";
+    }
+  };
+
   const bookings = stats?.overview?.bookings;
   const totals = stats?.overview?.totals;
   const lastBooking = Array.isArray(stats?.recent_bookings)
@@ -134,153 +149,167 @@ const ProfileContent = ({ userData, stats }) => {
     : null;
 
   return (
-    <div className="max-w-5xl space-y-6">
-      {/* Profile Overview Section */}
+    <div className="max-w-5xl space-y-6 text-left w-full mx-auto">
+      
+      {/* Upper Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="sm:col-span-2 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Profile Overview</h2>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <div className="flex items-center gap-2">
-                    <Trophy
-                      className={`h-5 w-5 ${
-                        completionPercentage === 100
-                          ? "text-yellow-500"
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Profile Status: {getProfileStatus()}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Profile Completion</span>
-                <span className="text-sm text-gray-500">
-                  {completionPercentage}%
-                </span>
-              </div>
-              <Progress value={completionPercentage} className="h-2" />
+        
+        {/* Profile Completion Overview */}
+        <Card className="md:col-span-2 border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-black text-neutral-900 uppercase tracking-wider pl-0.5">
+                Profile Overview
+              </h2>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex items-center gap-2">
+                      <Trophy
+                        className={cn(
+                          "size-5",
+                          completionPercentage === 100
+                            ? "text-amber-500 fill-amber-500/10"
+                            : "text-neutral-300"
+                        )}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-neutral-900 text-white rounded-lg p-2 text-xs font-semibold">
+                    <p>Status: {getProfileStatus()}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
-            {getMissingFields().length > 0 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center justify-between mb-2 px-0.5">
+                  <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
+                    Profile Completion
+                  </span>
+                  <span className="text-xs font-black text-neutral-800">
+                    {completionPercentage}%
+                  </span>
+                </div>
+                <Progress 
+                  value={completionPercentage} 
+                  className="h-1.5 bg-neutral-100 rounded-full [&>div]:bg-emerald-500" 
+                />
+              </div>
+
+              {getMissingFields().length > 0 && (
+                <div className="bg-amber-50/80 border border-amber-200/60 rounded-2xl p-4 flex gap-3 text-left">
+                  <AlertCircle className="size-4.5 text-amber-600 shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-yellow-800">
+                    <h4 className="text-xs font-black text-amber-800 uppercase tracking-wider">
                       Complete Your Profile
                     </h4>
-                    <ul className="mt-2 space-y-1">
+                    <ul className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {getMissingFields().map((field) => (
                         <li
                           key={field}
-                          className="text-sm text-yellow-700 flex items-center gap-2"
+                          className="text-[10px] font-bold text-amber-700 flex items-center gap-1.5"
                         >
-                          <div className="w-2 h-2 rounded-full bg-yellow-400" />
+                          <span className="size-1.5 rounded-full bg-amber-400 shrink-0" />
                           {field}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </Card>
 
-        {/* Quick Stats Card */}
-        <div className="space-y-5">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Account Balance</h3>
+        {/* Dynamic Account Balance & Statistics card */}
+        <div className="space-y-6">
+          <Card className="border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white p-6">
+            <h3 className="text-xs font-black text-neutral-900 uppercase tracking-wider mb-4">
+              Account Balance
+            </h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <AccountBalance className="h-10 w-10 text-blue-500" />
-                  <p className="text-xl font-bold">
+              <div className="flex items-center gap-3">
+                <div className="size-11 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                  <Wallet className="size-5.5 text-emerald-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-xs font-black text-neutral-450 uppercase tracking-wider">Available Balance</p>
+                  <p className="text-xl font-black text-neutral-900 tracking-tight notranslate">
                     {formatCurrency(userData?.acc_balance ?? 0)}
                   </p>
                 </div>
               </div>
+
               {userData?.acc_balance > 0 ? (
-                <p className="text-sm text-gray-600">
-                  This amount will be reduced for the next booking.
+                <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                  This amount will be applied as credit for your next booking.
                 </p>
               ) : (
-                <p className="text-sm text-gray-600">
-                  You will be charged for the next booking.
+                <p className="text-[10px] text-neutral-400 font-semibold leading-relaxed">
+                  You will be charged for the next service booking.
                 </p>
               )}
 
-              {/* Hold Account Balance Section */}
+              {/* Hold account warning details */}
               {userData?.hold_acc_balance &&
                 parseFloat(userData.hold_acc_balance) > 0 && (
-                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <Shield className="h-5 w-5 text-amber-600" />
-                        <span className="text-sm font-medium text-amber-800">
+                  <div className="mt-4 p-3.5 bg-amber-50/80 border border-amber-200/60 rounded-2xl text-left">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-1.5">
+                        <Shield className="h-4 w-4 text-amber-600" />
+                        <span className="text-[10px] font-black uppercase tracking-wider text-amber-800">
                           Hold Balance
                         </span>
                       </div>
-                      <span className="text-lg font-bold text-amber-800">
+                      <span className="text-sm font-black text-amber-800 notranslate">
                         {formatCurrency(userData.hold_acc_balance)}
                       </span>
                     </div>
-                    <div className="space-y-2">
-                      <p className="text-xs text-amber-700">
-                        <AlertCircle className="h-3 w-3 inline mr-1" />
-                        You cannot use this balance for booking payments.
-                      </p>
-                      <p className="text-xs text-amber-700">
-                        This amount will be transferred to your bank account.
-                      </p>
-                    </div>
+                    <p className="text-[9px] text-amber-700 leading-relaxed font-bold">
+                      <AlertTriangle className="h-3 w-3 inline mr-1 -mt-0.5 text-amber-650" />
+                      Hold balance is locked and pending bank transfer.
+                    </p>
                   </div>
                 )}
 
               <Button
                 onClick={handleViewLogs}
                 variant="outline"
-                size="sm"
-                className="w-full mt-3"
+                className="w-full mt-3 border-neutral-200 hover:bg-neutral-50 text-xs font-bold uppercase tracking-wider py-3 rounded-xl h-auto"
               >
-                <Eye className="h-4 w-4 mr-2" />
+                <Eye className="h-4 w-4 mr-1.5 text-emerald-500" />
                 View Logs
               </Button>
             </div>
           </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Activity Overview</h3>
-            <div className="space-y-4">
-              <Link href="/profile/customer/bookings" className="block">
-                <div className="flex items-center justify-between cursor-pointer">
+          {/* Activity counts */}
+          <Card className="border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white p-6">
+            <h3 className="text-xs font-black text-neutral-900 uppercase tracking-wider mb-4">
+              Activity Overview
+            </h3>
+            <div className="space-y-3.5">
+              <Link href="/profile/customer/bookings" className="block group">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <BookCheck className="h-5 w-5 text-blue-500" />
-                    <span className="text-sm">Total Bookings</span>
+                    <BookCheck className="size-4.5 text-emerald-500 shrink-0" />
+                    <span className="text-xs font-bold text-neutral-500 group-hover:text-neutral-950 transition-colors uppercase tracking-wide">Total Bookings</span>
                   </div>
-                  <span className="font-medium">
+                  <span className="text-xs font-black text-neutral-800 bg-neutral-100 border border-neutral-200/50 px-2 py-0.5 rounded-full notranslate">
                     {totals?.total_bookings || 0}
                   </span>
                 </div>
               </Link>
 
-              <Link href="/profile/customer/addresses" className="block">
+              <Link href="/profile/customer/addresses" className="block group">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <MapPin className="h-5 w-5 text-green-500" />
-                    <span className="text-sm">Saved Locations</span>
+                    <MapPin className="size-4.5 text-emerald-500 shrink-0" />
+                    <span className="text-xs font-bold text-neutral-500 group-hover:text-neutral-950 transition-colors uppercase tracking-wide">Saved Locations</span>
                   </div>
-                  <span className="font-medium">
+                  <span className="text-xs font-black text-neutral-800 bg-neutral-100 border border-neutral-200/50 px-2 py-0.5 rounded-full notranslate">
                     {totals?.total_addresses || 0}
                   </span>
                 </div>
@@ -288,32 +317,38 @@ const ProfileContent = ({ userData, stats }) => {
             </div>
           </Card>
         </div>
+
       </div>
 
-      {/* Recent Activity & Upcoming Services */}
+      {/* Lower Row Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+        
+        {/* Recent Activity card */}
+        <Card className="border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white p-6 text-left">
+          <h3 className="text-xs font-black text-neutral-900 uppercase tracking-wider mb-4">
+            Recent Activity
+          </h3>
           <Link href="/profile/customer/bookings">
-            <div className="space-y-4">
+            <div className="space-y-3">
               {bookings?.confirmed > 0 && (
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-blue-500" />
+                <div className="flex items-center gap-3 p-3.5 bg-emerald-50/50 border border-emerald-100/50 rounded-2xl">
+                  <Calendar className="size-5 text-emerald-500 shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-blue-900">
+                    <p className="text-xs font-black text-emerald-800 uppercase tracking-wide">
                       {bookings.upcoming} Upcoming{" "}
                       {bookings.upcoming === 1 ? "Booking" : "Bookings"}
                     </p>
-                    <p className="text-xs text-blue-700">Check your schedule</p>
+                    <p className="text-[10px] text-emerald-600 font-bold mt-0.5">Check date and time slots</p>
                   </div>
                 </div>
               )}
-              <div className="flex items-center gap-3 p-3 rounded-lg border">
-                <Clock className="h-5 w-5 text-gray-500" />
+              
+              <div className="flex items-center gap-3 p-3.5 rounded-2xl border border-neutral-200/60 bg-white">
+                <Clock className="size-5 text-neutral-400 shrink-0" />
                 <div>
-                  <p className="text-sm font-medium">Last Booking On</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(lastBooking?.created_at).toLocaleDateString()}
+                  <p className="text-xs font-black text-neutral-700 uppercase tracking-wide">Last Booking On</p>
+                  <p className="text-[10px] font-bold text-neutral-400 mt-0.5">
+                    {formatLastBookingDate(lastBooking)}
                   </p>
                 </div>
               </div>
@@ -321,32 +356,41 @@ const ProfileContent = ({ userData, stats }) => {
           </Link>
         </Card>
 
-        {/* Account Security Status */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Account Security</h3>
+        {/* Security verification details */}
+        <Card className="border border-neutral-200/60 shadow-sm rounded-[2rem] bg-white p-6 text-left">
+          <h3 className="text-xs font-black text-neutral-900 uppercase tracking-wider mb-4">
+            Account Security
+          </h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-gray-500" />
-                <span className="text-sm">Email Verification</span>
+            <div className="flex items-center justify-between pl-0.5">
+              <div className="flex items-center gap-2.5">
+                <Shield className="size-4.5 text-neutral-400 shrink-0" />
+                <span className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Email Verification</span>
               </div>
               <span
-                className={`text-sm font-medium ${
-                  userData.email_verified ? "text-green-600" : "text-red-600"
-                }`}
+                className={cn(
+                  "px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full border",
+                  userData.email_verified
+                    ? "bg-emerald-50 border-emerald-150 text-emerald-700"
+                    : "bg-red-50 border-red-150 text-red-700"
+                )}
               >
                 {userData.email_verified ? "Verified" : "Not Verified"}
               </span>
             </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <UserCheck className="h-5 w-5 text-gray-500" />
-                <span className="text-sm">Mobile Verification</span>
+
+            <div className="flex items-center justify-between pl-0.5">
+              <div className="flex items-center gap-2.5">
+                <UserCheck className="size-4.5 text-neutral-400 shrink-0" />
+                <span className="text-xs font-bold text-neutral-500 uppercase tracking-wide">Mobile Verification</span>
               </div>
               <span
-                className={`text-sm font-medium ${
-                  userData.mobile_verified ? "text-green-600" : "text-red-600"
-                }`}
+                className={cn(
+                  "px-2.5 py-1 text-[9px] font-black uppercase tracking-wider rounded-full border",
+                  userData.mobile_verified
+                    ? "bg-emerald-50 border-emerald-150 text-emerald-700"
+                    : "bg-red-50 border-red-150 text-red-700"
+                )}
               >
                 {userData.mobile_verified ? "Verified" : "Not Verified"}
               </span>
@@ -355,123 +399,111 @@ const ProfileContent = ({ userData, stats }) => {
         </Card>
       </div>
 
-      {/* Help & Support */}
-      <div className="text-center p-6">
-        <p className="text-sm text-gray-500">
-          Need help? Our support team is available 24/7
+      {/* Support trigger */}
+      <div className="text-center pt-8 pb-4">
+        <p className="text-xs font-bold text-neutral-400 uppercase tracking-wider">
+          Need help? Our customer support is active 24/7.
         </p>
-        <Button variant="link" className="text-primary mt-1" asChild>
+        <Button variant="link" className="text-emerald-600 hover:text-emerald-700 mt-1.5 text-xs font-extrabold uppercase tracking-wider" asChild>
           <Link href="/support">Contact Support</Link>
         </Button>
       </div>
 
-      {/* Account Balance Logs Modal */}
+      {/* Account Balance Logs Modal popup */}
       <Dialog open={showLogsModal} onOpenChange={setShowLogsModal}>
-        <DialogContent className="w-full max-w-full sm:max-w-2xl md:max-w-4xl max-h-[80vh] flex flex-col">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="flex items-center gap-2">
-              <AccountBalance className="h-5 w-5" />
+        <DialogContent className="w-[90vw] max-w-lg md:max-w-3xl max-h-[80vh] flex flex-col border-none bg-white shadow-2xl rounded-[2.5rem] overflow-hidden p-0">
+          <DialogHeader className="p-6 border-b border-neutral-100 text-left">
+            <DialogTitle className="flex items-center gap-2 text-xl font-black text-neutral-900 uppercase tracking-tight">
+              <Wallet className="size-5.5 text-emerald-500 shrink-0" />
               Account Balance Logs
             </DialogTitle>
-            <DialogDescription>
-              View your account balance transaction history including payments,
-              refunds, penalties, and adjustments.
+            <DialogDescription className="text-xs text-neutral-500 mt-1">
+              Transaction history showing payments, refunds, penalties, and adjustments.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex flex-col flex-1 min-h-0 p-6">
             <div className="flex justify-between items-center mb-4 flex-shrink-0">
-              <p className="text-sm text-gray-600">
-                Transaction history for your account balance
+              <p className="text-[10px] font-black uppercase tracking-wider text-neutral-400">
+                Transaction Logs
               </p>
               <Button
                 onClick={fetchBalanceLogs}
                 variant="outline"
-                size="sm"
                 disabled={logsLoading}
+                className="border-neutral-200 hover:bg-neutral-50 text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-xl h-auto flex items-center gap-1.5"
               >
-                {logsLoading ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                )}
+                <RefreshCw className={cn("size-3.5", logsLoading && "animate-spin")} />
                 Refresh
               </Button>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2 -mr-2 max-h-[60vh] sm:max-h-[70vh]">
+            <div className="flex-1 overflow-y-auto pr-1 max-h-[48vh]">
               {logsLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <RefreshCw className="h-6 w-6 animate-spin mr-2" />
-                  <span>Loading logs...</span>
+                <div className="flex flex-col items-center justify-center py-12 gap-2">
+                  <RefreshCw className="size-6 animate-spin text-emerald-500" />
+                  <span className="text-xs font-bold text-neutral-400 uppercase tracking-wider animate-pulse">Loading log details...</span>
                 </div>
               ) : balanceLogs.length === 0 ? (
-                <div className="text-center py-8">
-                  <AccountBalance className="h-12 w-12 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-500">No transaction logs found</p>
+                <div className="text-center py-12 space-y-2">
+                  <Wallet className="size-10 text-neutral-350 mx-auto" />
+                  <p className="text-xs font-bold text-neutral-450 uppercase tracking-wider">No transaction logs recorded</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {balanceLogs.map((log, index) => (
-                    <Card key={log.log_id || index} className="p-4 sm:p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
+                    <Card key={log.log_id || index} className="p-4 border border-neutral-250/50 shadow-sm rounded-2xl bg-white text-left">
+                      <div className="flex items-center justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
                             <Badge
                               className={cn(
-                                "w-fit",
+                                "w-fit text-[9px] font-black uppercase tracking-wide border px-2 py-0.5 rounded-full",
                                 getTransactionTypeColor(log.transaction_type)
                               )}
                             >
                               {getTransactionTypeLabel(log.transaction_type)}
                             </Badge>
 
-                            <span className="hidden md:inline-block text-sm text-gray-500">
+                            <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wide">
                               {formatDate(log.created_at)}
                             </span>
                           </div>
 
-                          <p className="text-sm font-medium mb-1">
+                          <p className="text-xs font-extrabold text-neutral-800 leading-snug mb-1">
                             {log.description}
                           </p>
 
-                          <span className="block mb-1 md:hidden text-sm text-gray-500">
-                            {formatDate(log.created_at)}
-                          </span>
-
                           {log.reference_id && (
-                            <p className="text-xs text-gray-500">
+                            <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-wide">
                               Reference: {log.reference_id}
                             </p>
                           )}
+                          
                           {log.metadata && (
-                            <p className="text-xs text-gray-400">
-                              {log.metadata.payment_id &&
-                                `Payment ID: ${log.metadata.payment_id}`}
-                              {log.metadata.refund_reason &&
-                                log.metadata.refund_reason}
-                              {log.metadata.penalty_reason &&
-                                log.metadata.penalty_reason}
-                              {log.metadata.adjustment_reason &&
-                                log.metadata.adjustment_reason}
+                            <p className="text-[9px] font-bold text-neutral-400/80 leading-normal mt-1">
+                              {log.metadata.payment_id && `Payment ID: ${log.metadata.payment_id}`}
+                              {log.metadata.refund_reason && `Reason: ${log.metadata.refund_reason}`}
+                              {log.metadata.penalty_reason && `Reason: ${log.metadata.penalty_reason}`}
+                              {log.metadata.adjustment_reason && `Reason: ${log.metadata.adjustment_reason}`}
                             </p>
                           )}
                         </div>
 
-                        <div className="text-right">
+                        <div className="text-right shrink-0">
                           <p
-                            className={`text-lg font-bold ${
+                            className={cn(
+                              "text-sm font-black notranslate",
                               parseFloat(log.amount) > 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
+                                ? "text-emerald-700"
+                                : "text-red-700"
+                            )}
                           >
                             {parseFloat(log.amount) > 0 ? "+" : ""}
                             {formatCurrency(parseFloat(log.amount))}
                           </p>
-                          <p className="text-xs text-gray-500">
-                            Balance:{" "}
-                            {formatCurrency(parseFloat(log.new_balance))}
+                          <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-wider mt-0.5">
+                            Bal: {formatCurrency(parseFloat(log.new_balance))}
                           </p>
                         </div>
                       </div>

@@ -1,8 +1,7 @@
 "use client";
-
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, X, Minus, Plus } from "lucide-react";
+import { ShoppingCart, X, Minus, Plus, AlertCircle, AlertTriangle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -31,128 +30,140 @@ export default function Cart({
     .map((item) => item.price * (item.quantity || 1))
     .reduce((a, b) => a + b, 0);
 
-  const getImageUrl = (path) => {
-    if (path) {
-      return process.env.NEXT_PUBLIC_API_ENDPOINT + path;
+  const isValidUrl = (url) => {
+    if (!url || typeof url !== "string") return false;
+    if (url.startsWith("/") || url.startsWith("data:")) return true;
+    try {
+      if (url.startsWith("undefined")) return false;
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
     }
+  };
 
-    return null;
+  const getImageUrl = (path) => {
+    const raw = path ? process.env.NEXT_PUBLIC_API_ENDPOINT + path : null;
+    return isValidUrl(raw) ? raw : "/assets/images/card-1.jpg";
   };
 
   const renderCartContent = () => (
     <>
       {selectedItems.length === 0 ? (
-        <div className="flex flex-col items-center justify-center pb-8 pt-2 px-4">
-          <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center mb-3">
-            <ShoppingCart className="w-8 h-8 text-gray-300" />
+        <div className="flex flex-col items-center justify-center pb-8 pt-6 px-4">
+          <div className="w-16 h-16 rounded-full bg-neutral-50 border border-neutral-100 flex items-center justify-center mb-3">
+            <ShoppingCart className="w-6 h-6 text-neutral-300" />
           </div>
-          <p className="text-gray-500 text-sm font-medium">
+          <p className="text-neutral-800 text-sm font-bold">
             Your cart is empty
           </p>
-          <p className="text-gray-400 text-xs mt-0.5">
+          <p className="text-neutral-400 text-xs mt-1">
             Add services to get started
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {hasNonHomeVistItems && (
-            <div className="bg-yellow-50 border-y border-yellow-200 p-3 -mx-4">
-              <p className="text-xs text-yellow-800 text-center">
-                Note: You have non-home visit services in your cart. Both home
-                visit and non-home visit services cannot be booked together.
+            <div className="bg-amber-50/80 border border-amber-200/60 p-3.5 rounded-2xl flex items-start gap-2 text-left">
+              <AlertTriangle className="size-4 text-amber-600 shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-relaxed font-bold text-amber-800">
+                Notice: You have non-home visit services in your cart. Home visit and non-home visit items cannot be booked together.
               </p>
             </div>
           )}
 
-          {selectedItems.map((item) => (
-            <div
-              key={`${item.id}-${item.type}`}
-              className="bg-gray-50 rounded-lg p-3 relative"
-            >
-              <button
-                onClick={() => onRemove(item)}
-                className="absolute top-2 right-2 p-1 hover:bg-white rounded-full transition-colors"
+          <div className="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+            {selectedItems.map((item) => (
+              <div
+                key={`${item.id}-${item.type}`}
+                className="bg-white border border-neutral-200/60 hover:border-neutral-300 rounded-2xl p-3.5 relative transition-all duration-200"
               >
-                <X className="w-4 h-4 text-gray-500" />
-              </button>
+                {/* Delete button */}
+                <button
+                  onClick={() => onRemove(item)}
+                  className="absolute top-3 right-3 p-1 hover:bg-neutral-100 rounded-full transition-colors"
+                >
+                  <X className="w-3.5 h-3.5 text-neutral-400 hover:text-neutral-700" />
+                </button>
 
-              <div className="flex gap-3">
-                <div className="bg-gray-100 rounded-lg overflow-hidden w-10 h-10">
-                  <Image
-                    src={getImageUrl(item.image_url)}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    className="object-cover w-full h-full"
-                    unoptimized
-                    crossOrigin="anonymous"
-                  />
-                </div>
+                <div className="flex gap-3 text-left">
+                  <div className="relative border border-neutral-100 bg-neutral-50 rounded-xl overflow-hidden w-12 h-12 shrink-0">
+                    <Image
+                      src={getImageUrl(item.image_url)}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                      sizes="48px"
+                      unoptimized
+                      crossOrigin="anonymous"
+                    />
+                  </div>
 
-                <div>
-                  <div className="pr-6">
-                    <p className="font-medium text-sm text-gray-900 mb-1">
+                  <div className="flex-1 min-w-0 pr-4">
+                    <p className="font-extrabold text-xs text-neutral-900 leading-tight mb-1 line-clamp-2">
                       {item.name}
                     </p>
-                    <p className="text-sm font-semibold text-[var(--color-primary)] notranslate">
-                      ₹{item.price}
+                    <p className="text-xs font-black text-emerald-700 notranslate">
+                      ₹{Number(item.price).toFixed(2)}
                     </p>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-2 mt-3.5">
+                  <button
+                    onClick={() =>
+                      onQuantityChange(
+                        item,
+                        Math.max(1, (item.quantity || 1) - 1)
+                      )
+                    }
+                    className="w-7 h-7 flex items-center justify-center border border-neutral-200 rounded-lg bg-white hover:bg-neutral-50 active:scale-95 transition-all shadow-sm"
+                  >
+                    <Minus className="w-3 h-3 text-neutral-600" />
+                  </button>
+
+                  <span className="text-xs font-black w-8 text-center notranslate text-neutral-800">
+                    {item.quantity || 1}
+                  </span>
+
+                  <button
+                    onClick={() =>
+                      onQuantityChange(item, (item.quantity || 1) + 1)
+                    }
+                    className="w-7 h-7 flex items-center justify-center border border-neutral-200 rounded-lg bg-white hover:bg-neutral-50 active:scale-95 transition-all shadow-sm"
+                  >
+                    <Plus className="w-3 h-3 text-neutral-600" />
+                  </button>
+                </div>
               </div>
+            ))}
+          </div>
 
-              <div className="flex items-center gap-2 mt-3">
-                <button
-                  onClick={() =>
-                    onQuantityChange(
-                      item,
-                      Math.max(1, (item.quantity || 1) - 1)
-                    )
-                  }
-                  className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-md hover:bg-white transition-colors"
-                >
-                  <Minus className="w-3.5 h-3.5 text-gray-600" />
-                </button>
-
-                <span className="text-sm font-medium w-8 text-center notranslate">
-                  {item.quantity || 1}
-                </span>
-
-                <button
-                  onClick={() =>
-                    onQuantityChange(item, (item.quantity || 1) + 1)
-                  }
-                  className="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-md hover:bg-white transition-colors"
-                >
-                  <Plus className="w-3.5 h-3.5 text-gray-600" />
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <div className="pt-4 space-y-3">
-            <div className="flex justify-between items-center py-3 border-t">
-              <span className="font-semibold text-base text-gray-900">
-                Total
+          <div className="pt-4 space-y-4 border-t border-neutral-100">
+            <div className="flex justify-between items-center pl-1">
+              <span className="font-extrabold text-sm uppercase tracking-wider text-neutral-400">
+                Total Amount
               </span>
-              <span className="font-bold text-lg text-gray-900 notranslate">
+              <span className="font-black text-xl text-neutral-900 notranslate">
                 ₹{totalPrice.toFixed(2)}
               </span>
             </div>
 
             {totalPrice < minimumCartValue && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-xs text-red-600 text-center">
+              <div className="bg-red-50/80 border border-red-200/60 rounded-2xl p-3.5 flex items-start gap-2 text-left">
+                <AlertCircle className="size-4 text-red-500 shrink-0 mt-0.5" />
+                <p className="text-[11px] leading-relaxed text-red-700 font-bold">
                   Minimum cart value is ₹
                   <span className="notranslate">
                     {minimumCartValue.toFixed(2)}
                   </span>
+                  . Please add more services to checkout.
                 </p>
               </div>
             )}
 
             <Button
-              className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 rounded-lg transition-colors"
+              className="w-full bg-black text-white hover:bg-neutral-800 font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs shadow-md transition-all duration-300 disabled:bg-neutral-150 disabled:text-neutral-400 disabled:opacity-40"
               onClick={onCheckout}
               disabled={totalPrice < minimumCartValue}
             >
@@ -167,20 +178,22 @@ export default function Cart({
   return (
     <>
       {/* Desktop Cart */}
-      <Card className="hidden sm:block border-gray-200 shadow-sm overflow-hidden">
-        <CardHeader className="bg-white py-3 px-4">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <ShoppingCart className="w-4 h-4" />
-            Cart
+      <Card className="hidden sm:block border-neutral-200/60 shadow-sm overflow-hidden rounded-[2rem] bg-white">
+        <CardHeader className="bg-white border-b border-neutral-100 py-4 px-5">
+          <CardTitle className="flex items-center gap-2 text-left">
+            <ShoppingCart className="w-4 h-4 text-emerald-500" />
+            <span className="font-black uppercase text-xs tracking-wider text-neutral-800">
+              Your Cart
+            </span>
             {selectedItems.length > 0 && (
-              <span className="text-xs font-normal text-gray-500 ml-auto notranslate">
-                {selectedItems.length} item(s)
+              <span className="text-[10px] font-bold text-neutral-400 ml-auto notranslate bg-neutral-100 border border-neutral-200/50 px-2.5 py-1 rounded-full">
+                {selectedItems.length} items
               </span>
             )}
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="p-4 pt-2 bg-white">
+        <CardContent className="p-5 bg-white">
           {renderCartContent()}
         </CardContent>
       </Card>
@@ -188,35 +201,37 @@ export default function Cart({
       {/* Mobile Cart */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <button className="sm:hidden fixed top-[5.3rem] right-5 w-14 h-14 border rounded-full transition-all duration-200 flex items-center justify-center z-50">
-            <ShoppingCart className="w-6 h-6" />
+          <button className="sm:hidden fixed top-[5.3rem] right-5 w-14 h-14 bg-black text-white hover:bg-neutral-800 shadow-xl border border-neutral-800 rounded-full transition-all duration-200 flex items-center justify-center z-50">
+            <ShoppingCart className="w-5 h-5" />
             {selectedItems.length > 0 && (
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold border-2 border-white notranslate">
+              <div className="absolute -top-1.5 -right-1.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-black border-2 border-white notranslate">
                 {selectedItems.length}
               </div>
             )}
           </button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto w-[90vw] rounded-xl [&>button]:hidden p-0">
-          <DialogHeader className="px-5 py-3 bg-white sticky top-0 z-10">
-            <DialogTitle className="flex items-center gap-2 text-lg">
-              <ShoppingCart className="w-4 h-4" />
-              Cart
+        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto w-[90vw] rounded-2xl [&>button]:hidden p-0 bg-white">
+          <DialogHeader className="px-5 py-4 bg-white border-b border-neutral-100 sticky top-0 z-10 text-left">
+            <DialogTitle className="flex items-center gap-2">
+              <ShoppingCart className="w-4 h-4 text-emerald-500" />
+              <span className="font-black uppercase text-xs tracking-wider text-neutral-800">
+                Your Cart
+              </span>
               {selectedItems.length > 0 && (
-                <span className="text-xs font-normal text-gray-500 ml-auto">
-                  {selectedItems.length} item(s)
+                <span className="text-[10px] font-bold text-neutral-400 ml-auto bg-neutral-100 border border-neutral-200/50 px-2.5 py-1 rounded-full">
+                  {selectedItems.length} items
                 </span>
               )}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="px-4 sm:pb-4 pt-0">{renderCartContent()}</div>
+          <div className="p-5">{renderCartContent()}</div>
 
-          <div className="sm:border-t pt-0 sm:pt-4 px-4 pb-4 bg-white sticky bottom-0">
+          <div className="border-t border-neutral-100 p-4 bg-neutral-50 sticky bottom-0 flex gap-3">
             <Button
               variant="outline"
-              className="w-full"
+              className="w-full border-neutral-200 hover:bg-neutral-100 text-xs font-bold uppercase tracking-wider rounded-xl py-3"
               onClick={() => setIsOpen(false)}
             >
               Close

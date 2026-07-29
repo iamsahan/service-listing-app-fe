@@ -401,7 +401,7 @@ const BookingDetailsModal = ({ booking }) => {
                   <CardContent className="p-3 sm:p-4">
                     <div className="flex justify-between items-center sm:text-center sm:flex-col">
                       <div className="text-xs sm:text-sm font-medium text-green-700 mb-0 sm:mb-1">
-                        Service Commission for qproz
+                        Service Commission for ProHive
                       </div>
                       <div className="text-xl sm:text-2xl font-bold text-green-900">
                         ₹

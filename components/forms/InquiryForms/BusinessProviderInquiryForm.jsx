@@ -89,11 +89,6 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
         }
       } catch (error) {
         console.error("Error fetching services:", error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch services.",
-          variant: "destructive",
-        });
       }
     };
 
@@ -104,7 +99,6 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Show/hide error messages realtime
     if (value === "") {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -117,20 +111,6 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
       }));
     }
 
-    if (name === "no_of_employee") {
-      if (value < 0 || isNaN(value) || value > 1000) {
-        return;
-      }
-    }
-
-    // Prevent unusual inputs in mobile
-    if (name === "mobile") {
-      if (value.length > 10 || !value.match(/^[0-9]{0,10}$/)) {
-        return;
-      }
-    }
-
-    // Prevent unusual inputs in dob
     if (name === "dob") {
       const error = isValidDOB(value);
       if (error) {
@@ -146,68 +126,34 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
       }
     }
 
-    onFormDataChange((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Validate date of birth
-  const isValidDOB = (dob) => {
-    if (!dob) return;
-
-    const dobDate = dayjs(dob);
-    if (!dobDate.isValid()) return "Invalid date format";
-    if (dobDate.isAfter(today)) return "Birthdate cannot be in the future";
-
-    // Calculate age
-    const age = today.diff(dobDate, "year");
-
-    if (age < 18 || age > 80) return "Age must be between 18 and 80";
-  };
-
-  // Handle category change
-  const handleCategoryChange = (selectedOptions) => {
-    if (selectedOptions && selectedOptions.length > 0) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        categories: "",
-      }));
-
-      onFormDataChange((prev) => ({
-        ...prev,
-        categories: selectedOptions.map((option) => option.value),
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        categories: "Select at least one category",
-      }));
+    if (name === "business_name") {
+      if (value.length > 100) return;
     }
 
-    setSelectedServiceCategories(selectedOptions);
-  };
-
-  // Hnadle city change
-  const handleCitiesChange = (selectedOptions) => {
-    if (selectedOptions && selectedOptions.length > 0) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        cities: "",
-      }));
-
-      onFormDataChange((prev) => ({
-        ...prev,
-        cities: selectedOptions.map((option) => option.value),
-      }));
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        cities: "Select at least one city",
-      }));
+    if (name === "name") {
+      if (value.length > 50) return;
     }
 
-    setSelectedCities(selectedOptions);
+    if (name === "mobile") {
+      if (value.length > 10 || !value.match(/^[0-9]{0,10}$/)) return;
+    }
+
+    if (name === "email") {
+      if (value.length > 100) return;
+    }
+
+    if (name === "website") {
+      if (value.length > 100) return;
+    }
+
+    if (name === "no_of_employee") {
+      const num = parseInt(value);
+      if (num < 1 || num > 10000000000000000000) return;
+    }
+
+    onFormDataChange({ ...formData, [name]: value });
   };
 
-  // Handle location change
   const handleLocationChange = (location) => {
     if (!location) {
       setErrors((prevErrors) => ({
@@ -224,51 +170,94 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
     onFormDataChange({ ...formData, location: location });
   };
 
-  // Handle location select from map
   const handleLocationSelect = (locationData) => {
     const location = {
       coordinates: locationData.coordinates,
       address: locationData.details?.street
-        ? `${locationData.details.street}, ${locationData.details.city}, ${locationData.details.state}`
-        : "Selected Location",
+        ? `${locationData.details.street}, ${
+            locationData.details.city || ""
+          }, ${locationData.details.state || ""}`
+        : locationData.address,
       details: locationData.details,
     };
+
     handleLocationChange(location);
+  };
+
+  const handleCitiesChange = (selectedCities) => {
+    if (Array.isArray(selectedCities) && selectedCities.length > 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        cities: "",
+      }));
+
+      onFormDataChange({
+        ...formData,
+        cities: selectedCities.map((city) => city.value),
+      });
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        cities: "Select at least one city",
+      }));
+    }
+
+    setSelectedCities(selectedCities);
+  };
+
+  const handleCategoryChange = (selectedCategories) => {
+    if (Array.isArray(selectedCategories) && selectedCategories.length > 0) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        categories: "",
+      }));
+
+      onFormDataChange({
+        ...formData,
+        categories: selectedCategories.map((cat) => cat.value),
+      });
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        categories: "Select at least one category",
+      }));
+    }
+
+    setSelectedServiceCategories(selectedCategories);
+  };
+
+  const isValidDOB = (dob) => {
+    if (!dob) return;
+
+    const dobDate = dayjs(dob);
+    if (!dobDate.isValid()) return "Invalid date format";
+    if (dobDate.isAfter(today)) return "Birthdate cannot be in the future";
+
+    const age = today.diff(dobDate, "year");
+
+    if (age < 18 || age > 80) return "Age must be between 18 and 80";
   };
 
   const validateStep1 = () => {
     let newErrors = {};
 
-    // Business Name Validation
     if (!formData.business_name || formData.business_name.trim() === "") {
       newErrors.business_name = "Business name is required";
-    } else if (formData.business_name.trim().length < 2) {
-      newErrors.business_name = "Business name must be at least 2 characters";
-    } else if (formData.business_name.trim().length > 100) {
-      newErrors.business_name = "Business name must not exceed 100 characters";
     }
 
-    // Authorized Person Name Validation
     if (!formData.name || formData.name.trim() === "") {
       newErrors.name = "Authorized person name is required";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    } else if (formData.name.trim().length > 50) {
-      newErrors.name = "Name must not exceed 50 characters";
     }
 
-    // Mobile Validation
     if (!formData.mobile || formData.mobile.trim() === "") {
       newErrors.mobile = "Authorized person contact is required";
     } else {
       const cleanMobile = formData.mobile.replace(/[^0-9]/g, "");
-      const phoneRegex = /^\d{10,15}$/; // allows 10–15 digits
-      if (!phoneRegex.test(cleanMobile)) {
+      if (!/^\d{10,15}$/.test(cleanMobile)) {
         newErrors.mobile = "Phone number must be between 10 and 15 digits";
       }
     }
 
-    // DOB Validation
     if (formData.dob && formData.dob.trim() !== "") {
       const error = isValidDOB(formData.dob);
       if (error) newErrors.dob = error;
@@ -281,40 +270,30 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
   const validateStep2 = () => {
     let newErrors = {};
 
-    // Cities Validation
-    if (!formData.cities || formData.cities.length === 0) {
+    if (!formData.email || formData.email.trim() === "") {
+      newErrors.email = "Business email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!selectedCities || selectedCities.length === 0) {
       newErrors.cities = "Select at least one city";
     }
 
-    // Categories Validation
-    if (!formData.categories || formData.categories.length === 0) {
-      newErrors.categories = "Select at least one category";
+    if (!formData.location) {
+      newErrors.location = "Business location is required";
     }
 
-    // Employees Count Validation
     if (!formData.no_of_employee || formData.no_of_employee === "") {
       newErrors.no_of_employee = "Number of employees is required";
     } else if (isNaN(formData.no_of_employee)) {
-      newErrors.no_of_employee = "Number of employees must be a number";
-    } else if (formData.no_of_employee <= 0) {
-      newErrors.no_of_employee = "Number of employees must be greater than 0";
-    } else if (formData.no_of_employee > 10000) {
-      newErrors.no_of_employee = "Number of employees cannot exceed 10,000";
+      newErrors.no_of_employee = "Must be a number";
+    } else if (formData.no_of_employee < 1) {
+      newErrors.no_of_employee = "Must be at least 1 employee";
     }
 
-    // Email Validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || formData.email.trim() === "") {
-      newErrors.email = "Email is required";
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Invalid email format";
-    } else if (formData.email.length > 100) {
-      newErrors.email = "Email must not exceed 100 characters";
-    }
-
-    // Location Validation
-    if (!formData.location) {
-      newErrors.location = "Location is required";
+    if (!selectedServiceCategories || selectedServiceCategories.length === 0) {
+      newErrors.categories = "Select at least one category";
     }
 
     setErrors(newErrors);
@@ -322,7 +301,7 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
   };
 
   const handleNextStep = () => {
-    if (validateStep1()) {
+    if (step === 1 && validateStep1()) {
       setStep(2);
     }
   };
@@ -333,65 +312,39 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-
-    if (!validateStep2()) {
-      setIsSubmitting(false);
-      return;
-    }
+    if (!validateStep2()) return;
 
     const formDataToSend = {
-      type: formData.type,
+      type: "business",
       business_name: formData.business_name,
-      authorized_person_name: formData.name,
-      authorized_person_contact: formData.mobile,
-      business_type: formData.business_type,
-      business_website: formData.website,
-      service_location: {
-        type: "Point",
-        coordinates: formData.location.coordinates,
-        address: formData.address,
-      },
-      dob: formData.dob || null,
-      categories: formData.categories,
-      cities: selectedCities.map((city) => city.value),
-      number_of_employees: parseInt(formData.no_of_employee),
+      name: formData.name,
+      mobile: formData.mobile,
       email: formData.email,
       gender: formData.gender || null,
+      dob: formData.dob || null,
+      business_type: formData.business_type,
+      website: formData.website || null,
+      location: {
+        type: "point",
+        coordinates: formData.location?.coordinates || [],
+      },
+      categories: selectedServiceCategories.map((cat) => cat.value),
+      cities: selectedCities.map((city) => city.value),
+      no_of_employee: formData.no_of_employee.toString(),
     };
 
     try {
+      setIsSubmitting(true);
       setIsLoading(true);
-      const response = await providerAPI.createEnquiry(formDataToSend);
-
+      await providerAPI.createEnquiry(formDataToSend);
       toast({
         title: "Success!",
-        description: "Your inquiry was submitted successfully.",
-        variant: "default",
+        description: "Your business inquiry was submitted successfully.",
       });
 
       router.push("/registration/sucess");
-      // Reset form
-      onFormDataChange({
-        type: "business",
-        business_name: "",
-        name: "",
-        mobile: "",
-        email: "",
-        gender: "",
-        dob: "",
-        business_type: "sole_proprietorship",
-        website: "",
-        location: { type: "Point", coordinates: [0, 0] },
-        address: "",
-        categories: [],
-        no_of_employee: "",
-      });
-      setSelectedServiceCategories([]);
-      setStep(1);
     } catch (error) {
       console.error("Submission error:", error);
-
       const errorMessage =
         error.response?.data?.details ||
         "Failed to submit inquiry. Please try again.";
@@ -407,17 +360,17 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto text-left">
       {isLoading && (
         <LoadingScreen message={"Inquiry Application Submitting...."} />
       )}
       <form onSubmit={handleSubmit}>
         {step === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Business Name
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="text"
@@ -428,22 +381,22 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 required
                 maxLength={50}
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.business_name,
                   }
                 )}
               />
               {errors.business_name && (
-                <p className="text-red-500">{errors.business_name}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.business_name}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Business Type
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <select
                 name="business_type"
@@ -451,9 +404,9 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 onChange={handleChange}
                 required
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.business_type,
                   }
                 )}
@@ -465,14 +418,14 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 ))}
               </select>
               {errors.business_type && (
-                <p className="text-red-500">{errors.business_type}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.business_type}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Authorized Person Name
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="text"
@@ -483,23 +436,23 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 required
                 maxLength={50}
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.name,
                   }
                 )}
               />
-              {errors.name && <p className="text-red-500">{errors.name}</p>}
+              {errors.name && <p className="text-red-500 text-xs pl-2">{errors.name}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">Authorized Person Gender</label>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">Authorized Person Gender</label>
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800"
               >
                 <option value="">Select Gender</option>
                 <option value="Male">Male</option>
@@ -509,9 +462,9 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="block">Authorized Person Date of Birth</label>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">Authorized Person Date of Birth</label>
               <div
-                className={cn("rounded-md", {
+                className={cn("rounded-2xl overflow-hidden", {
                   "border border-red-500/50": errors.dob,
                 })}
               >
@@ -554,9 +507,10 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: errors.dob
                               ? "rgba(239, 68, 68, 0.05)"
-                              : "#f3f4f6",
-                            border: "none",
-                            borderRadius: "0.375rem",
+                              : "#ffffff",
+                            border: errors.dob ? "1px solid #ef4444" : "1px solid #e5e7eb",
+                            borderRadius: "1rem",
+                            transition: "all 0.2s ease-in-out",
                             "& fieldset": {
                               border: "none",
                             },
@@ -564,15 +518,21 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                               border: "none",
                             },
                             "&.Mui-focused fieldset": {
-                              border: "2px solid #3b82f6",
+                              border: "none",
+                            },
+                            "&.Mui-focused": {
+                              borderColor: "#10b981",
+                              boxShadow: "0 0 0 4px rgba(16, 185, 129, 0.12)",
                             },
                             "&.Mui-error fieldset": {
-                              border: "1px solid #ef4444",
+                              border: "none",
                             },
                           },
                           "& .MuiInputBase-input": {
-                            padding: "8px 12px",
-                            height: "24px",
+                            padding: "12px 16px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#1f2937",
                           },
                         },
                       },
@@ -581,13 +541,13 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 </LocalizationProvider>
               </div>
 
-              {errors.dob && <p className="text-red-500">{errors.dob}</p>}
+              {errors.dob && <p className="text-red-500 text-xs pl-2">{errors.dob}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Authorized Person Contact
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="number"
@@ -597,30 +557,32 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 placeholder="e.g., 0123456789"
                 required
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.mobile,
                   }
                 )}
               />
-              {errors.mobile && <p className="text-red-500">{errors.mobile}</p>}
+              {errors.mobile && <p className="text-red-500 text-xs pl-2">{errors.mobile}</p>}
             </div>
 
-            <button
-              type="button"
-              onClick={handleNextStep}
-              className="w-full bg-[var(--color-primary)] text-white py-3 px-6 rounded mt-4"
-            >
-              Next
-            </button>
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={handleNextStep}
+                className="w-full bg-black hover:bg-neutral-800 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md transition-all"
+              >
+                Next Step
+              </button>
+            </div>
           </div>
         )}
 
         {step === 2 && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
-              <label className="block">Business Website</label>
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">Business Website</label>
               <input
                 type="url"
                 name="website"
@@ -628,14 +590,14 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 value={formData.website}
                 onChange={handleChange}
                 placeholder="e.g., https://www.yourcompany.com"
-                className="w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800"
               />
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Business Email
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="email"
@@ -645,20 +607,20 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 onChange={handleChange}
                 placeholder="e.g., info@yourcompany.com"
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.email,
                   }
                 )}
               />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-red-500 text-xs pl-2">{errors.email}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Cities/Regions of Service
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <Select
                 id="cities"
@@ -672,43 +634,53 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                     ...base,
                     backgroundColor: errors.cities
                       ? "rgba(239, 68, 68, 0.05)"
-                      : "#f3f4f6",
-                    borderRadius: "0.375rem",
+                      : "#ffffff",
+                    borderRadius: "1rem",
                     border: state.isFocused
-                      ? "2px solid #3b82f6"
+                      ? "1px solid #10b981"
                       : errors.cities
                       ? "1px solid #ef4444"
-                      : "none",
-                    boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
+                      : "1px solid #e5e7eb",
+                    boxShadow: state.isFocused ? "0 0 0 4px rgba(16, 185, 129, 0.12)" : "none",
+                    padding: "2px 4px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#6b7280",
+                    color: "#9ca3af",
                   }),
                 }}
               />
-              {errors.cities && <p className="text-red-500">{errors.cities}</p>}
+              {errors.cities && <p className="text-red-500 text-xs pl-2">{errors.cities}</p>}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Business Location
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
-              <SetLocationWithMap
-                initialLocation={formData.location}
-                onLocationSelect={handleLocationSelect}
-                countryRestriction="in"
-              />
+              <div
+                className={cn("rounded-2xl overflow-hidden border border-neutral-200", {
+                  "border border-red-500 bg-red-500/5": errors.location,
+                })}
+              >
+                <SetLocationWithMap
+                  initialLocation={formData.location}
+                  onLocationSelect={handleLocationSelect}
+                  countryRestriction="in"
+                />
+              </div>
               {errors.location && (
-                <p className="text-red-500">{errors.location}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.location}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Number of Employees
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <input
                 type="number"
@@ -718,22 +690,22 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 placeholder="e.g., 15"
                 min="1"
                 className={cn(
-                  "w-full bg-gray-100 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  "w-full bg-white border border-neutral-200 px-4 py-3.5 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-200 text-sm font-semibold text-neutral-800",
                   {
-                    "border border-red-500 bg-red-500/5 text-red-500":
+                    "border-red-500 focus:ring-red-500/10 focus:border-red-500 bg-red-500/5":
                       errors.no_of_employee,
                   }
                 )}
               />
               {errors.no_of_employee && (
-                <p className="text-red-500">{errors.no_of_employee}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.no_of_employee}</p>
               )}
             </div>
 
             <div className="space-y-2">
-              <label className="block">
+              <label className="text-xs font-bold text-neutral-700 uppercase tracking-wider pl-1">
                 Service Categories
-                <span className="text-red-500">*</span>
+                <span className="text-red-500 ml-0.5">*</span>
               </label>
               <Select
                 isMulti
@@ -741,38 +713,40 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
                 value={selectedServiceCategories}
                 onChange={handleCategoryChange}
                 placeholder="Select service categories your business offers"
-                className="basic-multi-select"
                 styles={{
                   control: (base, state) => ({
                     ...base,
                     backgroundColor: errors.categories
                       ? "rgba(239, 68, 68, 0.05)"
-                      : "#f3f4f6",
-                    borderRadius: "0.375rem",
+                      : "#ffffff",
+                    borderRadius: "1rem",
                     border: state.isFocused
-                      ? "2px solid #3b82f6"
+                      ? "1px solid #10b981"
                       : errors.categories
                       ? "1px solid #ef4444"
-                      : "none",
-                    boxShadow: state.isFocused ? "0 0 0 2px #3b82f6" : "none",
+                      : "1px solid #e5e7eb",
+                    boxShadow: state.isFocused ? "0 0 0 4px rgba(16, 185, 129, 0.12)" : "none",
+                    padding: "2px 4px",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    transition: "all 0.2s",
                   }),
                   placeholder: (base) => ({
                     ...base,
-                    color: "#6b7280",
+                    color: "#9ca3af",
                   }),
                 }}
-                classNamePrefix="select"
               />
               {errors.categories && (
-                <p className="text-red-500">{errors.categories}</p>
+                <p className="text-red-500 text-xs pl-2">{errors.categories}</p>
               )}
             </div>
 
-            <div className="flex gap-2 pt-3">
+            <div className="flex gap-3 pt-4">
               <button
                 type="button"
                 onClick={handlePreviousStep}
-                className="bg-[var(--color-primary)] text-white py-3 px-6 rounded w-1/2"
+                className="w-1/2 bg-neutral-100 hover:bg-neutral-200 text-black py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-sm transition-all"
               >
                 Previous
               </button>
@@ -780,7 +754,7 @@ const BusinessProviderInquiryForm = ({ formData, onFormDataChange }) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-green-500 text-white py-3 px-6 rounded w-1/2"
+                className="w-1/2 bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold uppercase tracking-wider text-xs shadow-md transition-all disabled:opacity-50"
               >
                 {isSubmitting ? "Submitting..." : "Submit Registration"}
               </button>

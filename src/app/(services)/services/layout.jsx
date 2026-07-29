@@ -2,19 +2,19 @@ import LocationInitializer from "@/components/LocationInitializer";
 import { cookies } from "next/headers";
 
 export const metadata = {
-  title: "QProz Services – Find Trusted Professionals in Your City",
+  title: "ProHive Services – Find Trusted Professionals in Your City",
   description:
-    "Explore all home services offered by QProz. Find skilled professionals for cleaning, repairs, plumbing, electrical work, and more, near you.",
+    "Explore all home services offered by ProHive. Find skilled professionals for cleaning, repairs, plumbing, electrical work, and more, near you.",
   keywords:
-    "home services, cleaning, plumbing, electrical, repairs, trusted professionals, QProz",
+    "home services, cleaning, plumbing, electrical, repairs, trusted professionals, ProHive",
   openGraph: {
-    title: "QProz Services – Trusted Home Professionals",
+    title: "ProHive Services – Trusted Home Professionals",
     description:
       "Book verified home service professionals for cleaning, repairs, electrical, plumbing and more. Available in your city.",
     images: ["/assets/images/swiper-1.jpg"],
   },
   alternates: {
-    canonical: "https://qproz.com/services",
+    canonical: "https://prohive.com/services",
   },
 };
 

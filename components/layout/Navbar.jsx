@@ -25,7 +25,7 @@ const DesktopNav = memo(({ active }) => (
         className={cn(
           "font-semibold hover:text-[var(--color-primary)] transition-all",
           {
-            "text-[var(--color-primary)] bg-[#5f60b9]/10 py-2 px-3.5 rounded-full":
+            "text-[var(--color-primary)] bg-neutral-100 py-2 px-3.5 rounded-full":
               active === item.toLowerCase(),
           }
         )}
@@ -46,7 +46,7 @@ const DesktopAuthButtons = memo(({ user, onLogout, path }) => {
         {path !== "/registration/provider" && (
           <Link
             href="/registration/provider"
-            className="border text-primary/90 py-2 px-5 rounded-full font-medium hover:border-[var(--color-primary)] hover:bg-[#5f60b9]/5 transition-all"
+            className="border text-primary/90 py-2 px-5 rounded-full font-medium hover:border-[var(--color-primary)] hover:bg-[#000000]/5 transition-all"
           >
             Register as Professional
           </Link>
@@ -54,7 +54,7 @@ const DesktopAuthButtons = memo(({ user, onLogout, path }) => {
 
         {path !== "/login/user" && (
           <Link href="/login/user">
-            <button className="bg-gradient-to-br to-[var(--color-primary)] from-[var(--color-primary-gradient)] text-white py-2 px-5 rounded-full font-medium hover:bg-[#4a4b95] transition-all shadow-sm">
+            <button className="bg-gradient-to-br to-[var(--color-primary)] from-[var(--color-primary-gradient)] text-white py-2 px-5 rounded-full font-medium hover:bg-neutral-800 transition-all shadow-sm">
               Login
             </button>
           </Link>
@@ -117,7 +117,7 @@ const MobileNav = ({ user, isOpen, onClose, onLogout }) => {
             >
               <Link
                 href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-[#5f60b9]/10 rounded-lg transition-all"
+                className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-neutral-100 rounded-lg transition-all"
                 onClick={onClose}
               >
                 {item}
@@ -132,7 +132,7 @@ const MobileNav = ({ user, isOpen, onClose, onLogout }) => {
             <Link
               href="/registration/provider"
               onClick={onClose}
-              className="block text-center mb-3 border-2 border-[var(--color-primary)] text-[var(--color-primary)] py-3 px-4 rounded-xl text-[15px] font-semibold hover:bg-[#5f60b9]/10 transition-all shadow-sm"
+              className="block text-center mb-3 border-2 border-[var(--color-primary)] text-[var(--color-primary)] py-3 px-4 rounded-xl text-[15px] font-semibold hover:bg-neutral-100 transition-all shadow-sm"
             >
               Register as Professional
             </Link>
@@ -149,7 +149,7 @@ const MobileNav = ({ user, isOpen, onClose, onLogout }) => {
               <Link
                 href="/profile/customer/bookings"
                 onClick={onClose}
-                className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-[#5f60b9]/10 rounded-lg transition-all"
+                className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-neutral-100 rounded-lg transition-all"
               >
                 My bookings
               </Link>
@@ -157,7 +157,7 @@ const MobileNav = ({ user, isOpen, onClose, onLogout }) => {
             <Link
               href="/support"
               onClick={onClose}
-              className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-[#5f60b9]/10 rounded-lg transition-all"
+              className="block py-3 px-4 text-[15px] font-medium text-gray-700 hover:text-[var(--color-primary)] hover:bg-neutral-100 rounded-lg transition-all"
             >
               Help
             </Link>
@@ -201,8 +201,8 @@ const Navbar = () => {
           <Link href="/" className="flex items-center gap-2.5 -mt-1">
             <div className="relative h-12 w-28 lg:h-20 lg:w-32 lg:-ml-4 shrink-0">
               <Image
-                src="/assets/images/qproz.png"
-                alt="QProz Logo"
+                src="/assets/images/prohive_logo.png"
+                alt="ProHive Logo"
                 fill
                 priority
                 className="object-contain"

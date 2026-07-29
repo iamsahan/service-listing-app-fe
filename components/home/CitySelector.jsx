@@ -4,8 +4,7 @@ import { FaLocationCrosshairs } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { serviceAPI } from "../../api/services";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search } from "@mui/icons-material";
-import { MapPin } from "lucide-react";
+import { Search, MapPin, ChevronRight, Sparkles, Navigation } from "lucide-react";
 
 const CitySelector = () => {
   const router = useRouter();
@@ -14,6 +13,7 @@ const CitySelector = () => {
   const [filteredCities, setFilteredCities] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(-1);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     fetchCities();
@@ -97,47 +97,102 @@ const CitySelector = () => {
 
   return (
     <div className="relative w-full">
-      <div className="flex items-center">
-        <div className="relative w-full">
-          <Search className="absolute left-4 top-[1.8rem] lg:top-[2.05rem] transform -translate-y-1/2 text-black size-6 lg:size-8" />
+      
+      {/* Unified Input Wrapper */}
+      <div 
+        className={`flex items-center bg-white border rounded-2xl p-1.5 transition-all duration-300 ${
+          isFocused 
+            ? "border-emerald-500 ring-4 ring-emerald-500/10 shadow-md" 
+            : "border-neutral-200 hover:border-neutral-300 shadow-sm"
+        }`}
+      >
+        <Search 
+          className={`size-5 ml-3 shrink-0 transition-colors duration-300 ${
+            isFocused ? "text-emerald-500 animate-pulse" : "text-neutral-400"
+          }`} 
+        />
 
-          <input
-            type="text"
-            className="p-3 pl-12 lg:pl-[3.7rem] w-full h-14 lg:h-16 border placeholder:text-black placeholder:text-base lg:placeholder:text-xl text-xl text-black focus:placeholder:text-transparent placeholder:font-medium border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-md transition-all duration-300"
-            placeholder={"Select your location..."}
-            value={searchTerm}
-            onChange={handleSearch}
-            onFocus={() => {
-              if (searchTerm.trim() === "") {
-                setFilteredCities(cities);
-              }
-              setShowDropdown(true);
-            }}
-            onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-          />
-        </div>
+        <input
+          type="text"
+          className="w-full bg-transparent py-2.5 lg:py-3.5 pl-3 pr-4 text-neutral-800 focus:outline-none placeholder:text-neutral-400 text-sm sm:text-base font-semibold"
+          placeholder="Select your location..."
+          value={searchTerm}
+          onChange={handleSearch}
+          onFocus={() => {
+            setIsFocused(true);
+            if (searchTerm.trim() === "") {
+              setFilteredCities(cities);
+            }
+            setShowDropdown(true);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+            setTimeout(() => setShowDropdown(false), 200);
+          }}
+        />
 
+        {/* Integrated GPS detector */}
         <button
           onClick={handleGetLocation}
-          className="flex items-center justify-center size-14 aspect-square lg:size-16 bg-indigo-500 text-white rounded-xl hover:bg-blue-600 transition ml-4 shadow-md hover:shadow-lg"
+          className="p-3 lg:p-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white transition-all shadow-sm shrink-0 flex items-center justify-center group relative overflow-hidden"
+          title="Detect location"
         >
-          <FaLocationCrosshairs size={20} />
+          <span className="absolute inset-0 rounded-xl bg-emerald-400 opacity-20 animate-ping group-hover:block hidden" />
+          <Navigation size={15} className="group-hover:rotate-45 transition-transform duration-500 relative z-10" />
         </button>
       </div>
 
+      {/* Popular cities pill shortcuts */}
+      <div className="flex flex-wrap items-center gap-2 mt-3.5 text-xs text-left">
+        <span className="text-neutral-400 font-extrabold uppercase text-[9px] tracking-wider pl-1.5 flex items-center gap-1">
+          Popular Hubs:
+        </span>
+        {["Mumbai", "Delhi", "Bangalore", "Hyderabad"].map((cityName) => (
+          <button
+            key={cityName}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              handleCitySelect(cityName);
+            }}
+            className="px-3.5 py-1.5 rounded-full bg-neutral-50 hover:bg-emerald-50 border border-neutral-200/50 hover:border-emerald-300 hover:text-emerald-700 font-bold transition-all duration-200 shadow-sm text-[11px]"
+          >
+            {cityName}
+          </button>
+        ))}
+      </div>
+
+      {/* Smart popup suggest menu */}
       <AnimatePresence>
         {showDropdown && (
           <motion.div
-            initial={{ opacity: 0, y: -5, scale: 0.98 }}
+            initial={{ opacity: 0, y: 10, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -5, scale: 0.98 }}
+            exit={{ opacity: 0, y: 10, scale: 0.97 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="absolute bg-white border mt-1 border-gray-200 w-[calc(100%-5rem)] rounded-lg shadow-lg overflow-hidden z-20"
-            style={{
-              boxShadow:
-                "0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 10px -3px rgba(0, 0, 0, 0.05)",
-            }}
+            className="absolute bg-white/95 backdrop-blur-md border border-neutral-200 w-full mt-2.5 rounded-2xl shadow-xl overflow-hidden z-50 p-1.5"
           >
+            {/* Quick detect cell */}
+            {searchTerm.trim() === "" && (
+              <button
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  handleGetLocation();
+                }}
+                className="w-full p-3 border-b border-neutral-100 flex items-center justify-between text-left hover:bg-neutral-50 rounded-xl transition-colors group mb-1.5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/50">
+                    <FaLocationCrosshairs size={13} className="animate-pulse" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-extrabold text-neutral-800">Detect current location</p>
+                    <p className="text-[10px] text-neutral-400">Identify location automatically</p>
+                  </div>
+                </div>
+                <ChevronRight className="size-4 text-neutral-400 group-hover:translate-x-1 transition-transform" />
+              </button>
+            )}
+
             <div className="overflow-y-auto max-h-[180px] md:max-h-[220px] custom-scrollbar">
               {filteredCities.length > 0 ? (
                 filteredCities.map((city, index) => (
@@ -151,10 +206,10 @@ const CitySelector = () => {
                       delay: index * 0.02,
                       ease: "easeOut",
                     }}
-                    className={`px-4 py-2.5 cursor-pointer transition-all duration-150 border-b border-gray-50 last:border-b-0 ${
+                    className={`px-4 py-3.5 cursor-pointer transition-all duration-200 border-b border-neutral-50 last:border-b-0 flex items-center justify-between rounded-xl ${
                       hoveredIndex === index
-                        ? "bg-indigo-50 text-indigo-700"
-                        : "bg-white hover:bg-gray-50 text-gray-700"
+                        ? "bg-emerald-50 text-emerald-800 border-l-4 border-l-emerald-500 pl-3 font-semibold"
+                        : "bg-white text-neutral-700"
                     }`}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(-1)}
@@ -165,14 +220,17 @@ const CitySelector = () => {
                   >
                     <div className="flex items-center gap-2.5">
                       <MapPin
-                        className={`size-3.5 ${
+                        className={`size-4 ${
                           hoveredIndex === index
-                            ? "text-indigo-500"
-                            : "text-gray-400"
+                            ? "text-[#10b981]"
+                            : "text-neutral-400"
                         } transition-colors duration-150`}
                       />
-                      <span className="font-medium text-sm">{city.name}</span>
+                      <span className="text-xs font-bold">{city.name}</span>
                     </div>
+                    <ChevronRight className={`size-3.5 ${
+                      hoveredIndex === index ? "text-emerald-500 translate-x-0.5" : "text-neutral-300"
+                    } transition-all`} />
                   </motion.div>
                 ))
               ) : (
@@ -181,13 +239,13 @@ const CitySelector = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 5 }}
                   transition={{ duration: 0.2 }}
-                  className="px-4 py-6 text-center"
+                  className="px-4 py-6 text-center bg-amber-50/50 border border-amber-100 rounded-xl m-1.5 animate-pulse"
                 >
-                  <div className="text-gray-400 text-lg mb-1.5">🏙️</div>
-                  <div className="text-gray-600 font-medium text-sm">
+                  <div className="text-amber-500 text-2xl mb-1.5">🏙️</div>
+                  <div className="text-amber-800 font-bold text-sm">
                     We Will Be Available Soon...
                   </div>
-                  <div className="text-gray-400 text-xs mt-1">
+                  <div className="text-amber-600/80 text-xs mt-1">
                     Stay tuned for more locations
                   </div>
                 </motion.div>
@@ -199,20 +257,20 @@ const CitySelector = () => {
 
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
-          width: 3px;
+          width: 4px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f8fafc;
+          background: #f5f5f5;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: linear-gradient(180deg, #6366f1, #3b82f6);
+          background: linear-gradient(180deg, #10b981, #f59e0b);
           border-radius: 6px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(180deg, #4f46e5, #2563eb);
+          background: linear-gradient(180deg, #059669, #d97706);
         }
       `}</style>
     </div>
