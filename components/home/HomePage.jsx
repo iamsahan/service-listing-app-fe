@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Montserrat } from "next/font/google";
 import {
   ArrowRight,
   Calendar,
@@ -32,12 +31,6 @@ import CategoriesGrid from "./CategoriesGrid";
 
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import animation1 from "../../public/assets/lotties/Animation - 1748414177431.json";
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-montserrat",
-});
 
 const STATS = [
   {
@@ -183,7 +176,7 @@ const Home = () => {
   }, [toast]);
 
   return (
-    <div className={`${montserrat.className} overflow-x-hidden mt-16 lg:mt-20 bg-white min-h-screen text-neutral-900`}>
+    <div className="overflow-x-hidden mt-16 lg:mt-20 bg-white min-h-screen text-neutral-900">
       <style>{`
         @keyframes gradient-shift {
           0% { background-position: 0% 50%; }

@@ -3,7 +3,7 @@ import AuthWrapper from "@components/wrappers/AuthWrapper";
 import { Toaster } from "sonner";
 import { GA_MEASUREMENT_ID } from "@/lib/gtag";
 
-import { Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 
@@ -17,7 +17,10 @@ const GoogleTranslateScripts = dynamic(() =>
 );
 
 const NODE_ENV = process.env.NODE_ENV;
-const inter = Inter({ subsets: ["latin"] });
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 export default async function RootLayout({ children }) {
   if (!GA_MEASUREMENT_ID) {
@@ -34,7 +37,7 @@ export default async function RootLayout({ children }) {
         <GoogleTranslateScripts />
       </head>
 
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${montserrat.className} antialiased`}>
         {/* NoScript fallback */}
         <noscript>
           <img
