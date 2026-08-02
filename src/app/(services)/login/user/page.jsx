@@ -151,21 +151,13 @@ const CustomerLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white bg-grid-pattern px-6 py-12 relative overflow-hidden">
-      <style>{`
-        .bg-grid-pattern {
-          background-size: 30px 30px;
-          background-image: linear-gradient(to right, #f3f4f6 1px, transparent 1px),
-                            linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
-        }
-      `}</style>
-
+    <div className="min-h-screen flex items-center justify-center bg-neutral-950 px-6 py-12 relative overflow-hidden">
       {/* Dynamic blob light */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Glass card panel */}
-      <div className="bg-white/95 backdrop-blur-md border border-neutral-200 rounded-[2.5rem] w-full max-w-5xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative z-10">
+      <div className="bg-white backdrop-blur-md border border-white/10 rounded-[2.5rem] w-full max-w-5xl shadow-2xl flex flex-col lg:flex-row overflow-hidden relative z-10">
         
         {/* Left Side: Illustration Panel */}
         <div className="relative w-full lg:w-1/2 min-h-[300px] lg:min-h-[600px] flex flex-col justify-end p-10 overflow-hidden">
@@ -307,7 +299,7 @@ const CustomerLogin = () => {
 
                 {/* Submission button */}
                 <button
-                  className="w-full bg-black hover:bg-neutral-800 text-white py-4 rounded-2xl font-bold uppercase tracking-wider text-xs shadow-md transition-all disabled:opacity-50"
+                  className="w-full bg-neutral-950 hover:bg-neutral-800 text-white py-4 rounded-2xl font-bold uppercase tracking-wider text-xs shadow-md transition-all disabled:opacity-50"
                   onClick={handleSendOtp}
                   disabled={isLoading || !(mobile.length === 12)}
                 >

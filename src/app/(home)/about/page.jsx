@@ -57,48 +57,38 @@ const Page = () => {
 
   return (
     <div className="bg-white text-neutral-900 min-h-screen">
-      <style>{`
-        .bg-grid-pattern {
-          background-size: 40px 40px;
-          background-image: linear-gradient(to right, #f3f4f6 1px, transparent 1px),
-                            linear-gradient(to bottom, #f3f4f6 1px, transparent 1px);
-        }
-        .hero-clip {
-          clip-path: ellipse(140% 100% at 50% 0%);
-        }
-      `}</style>
-
       {/* Hero Section */}
-      <section className="relative pt-32 pb-24 overflow-hidden border-b border-neutral-100 bg-gradient-to-b from-neutral-50 via-white to-white bg-grid-pattern hero-clip">
+      <section className="relative pt-32 pb-24 overflow-hidden bg-neutral-950 text-white">
         {/* Glow Shapes */}
-        <div className="absolute top-[-80px] right-[20%] w-[380px] h-[380px] bg-emerald-100/40 rounded-full blur-[80px]" />
-        <div className="absolute bottom-[10%] left-[10%] w-[350px] h-[350px] bg-amber-100/30 rounded-full blur-[90px]" />
+        <div className="absolute top-[-80px] right-[20%] w-[420px] h-[420px] bg-emerald-500/15 rounded-full blur-[110px]" />
+        <div className="absolute bottom-[10%] left-[10%] w-[380px] h-[380px] bg-amber-500/10 rounded-full blur-[110px]" />
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10 text-center space-y-6">
-          <div className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold uppercase tracking-wider text-emerald-800 shadow-sm animate-pulse">
+          <div className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-white/80">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-2" />
             Empowering Daily Living
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-neutral-900 tracking-tight leading-[1.1]">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1]">
             We build local infrastructure <br className="hidden md:block" />
-            for <span className="bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-500 bg-clip-text text-transparent">trusted services</span>
+            for <span className="bg-gradient-to-r from-emerald-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">trusted services</span>
           </h1>
 
-          <p className="text-neutral-500 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed">
+          <p className="text-white/50 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed">
             ProHive is a premium technology platform that streamlines how households book verified trade, repair, and lifestyle professionals.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
               onClick={() => router.push("/services")}
-              className="w-full sm:w-auto px-7 py-3.5 bg-black text-white hover:bg-neutral-800 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md"
+              className="w-full sm:w-auto px-7 py-3.5 bg-white text-neutral-950 hover:bg-emerald-400 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-1.5 shadow-md"
             >
               Explore Services
-              <ArrowUpRight className="size-4 text-emerald-400" />
+              <ArrowUpRight className="size-4" />
             </button>
             <button
               onClick={() => router.push("/registration/provider")}
-              className="w-full sm:w-auto px-7 py-3.5 bg-neutral-100 hover:bg-neutral-200 text-black rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300"
+              className="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/15 border border-white/10 text-white rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300"
             >
               Become a Provider
             </button>
@@ -222,7 +212,7 @@ const Page = () => {
       {/* Corporate Call To Action Banner */}
       <section className="py-20 bg-white border-t border-neutral-100">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="p-8 md:p-16 bg-neutral-900 rounded-[2.5rem] text-white text-center space-y-8 relative overflow-hidden shadow-2xl">
+          <div className="p-8 md:p-16 bg-neutral-950 rounded-[2.5rem] text-white text-center space-y-8 relative overflow-hidden shadow-2xl">
             <div className="absolute top-[-50px] right-[-50px] w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]" />
             <div className="absolute bottom-[-50px] left-[-50px] w-96 h-96 bg-amber-500/10 rounded-full blur-[100px]" />
             

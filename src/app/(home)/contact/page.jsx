@@ -84,28 +84,22 @@ const ContactPage = () => {
 
   return (
     <div className="bg-white text-neutral-900 min-h-screen">
-      <style>{`
-        .bg-grid-pattern {
-          background-size: 40px 40px;
-          background-image: linear-gradient(to right, #f8fafc 1px, transparent 1px),
-                            linear-gradient(to bottom, #f8fafc 1px, transparent 1px);
-        }
-      `}</style>
-
       {/* Hero Header Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden border-b border-neutral-100 bg-neutral-50 bg-grid-pattern">
-        <div className="absolute top-[-80px] right-[15%] w-[380px] h-[380px] bg-emerald-100/30 rounded-full blur-[80px]" />
-        
+      <section className="relative pt-32 pb-20 overflow-hidden bg-neutral-950 text-white">
+        <div className="absolute top-[-80px] right-[15%] w-[380px] h-[380px] bg-emerald-500/15 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-60px] left-[10%] w-[340px] h-[340px] bg-amber-500/10 rounded-full blur-[100px]" />
+
         <div className="container mx-auto px-6 max-w-7xl relative z-10 text-center space-y-6">
-          <div className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-bold uppercase tracking-wider text-emerald-800 shadow-sm animate-pulse">
+          <div className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold uppercase tracking-wider text-white/80">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-2" />
             Support Center
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-neutral-900 tracking-tight leading-[1.1]">
-            How can we <span className="bg-gradient-to-r from-emerald-600 via-amber-500 to-emerald-500 bg-clip-text text-transparent">help you</span> today?
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.1]">
+            How can we <span className="bg-gradient-to-r from-emerald-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">help you</span> today?
           </h1>
 
-          <p className="text-neutral-500 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
+          <p className="text-white/50 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
             Connect with our team to resolve queries, report booking problems, or explore provider partnership workflows.
           </p>
         </div>
@@ -380,7 +374,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-black hover:bg-neutral-800 text-white py-4 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
+                  className="w-full bg-neutral-950 hover:bg-neutral-800 text-white py-4 rounded-full font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
                 >
                   {loading ? "Opening ticket..." : "Open Support Ticket"}
                 </button>
