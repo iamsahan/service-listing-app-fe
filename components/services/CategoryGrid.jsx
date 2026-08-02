@@ -106,15 +106,15 @@ export function ExpandableCategory({ categories, cityName }) {
         </DialogContent>
       </Dialog>
 
-      {/* Categories listing grid in sidebar */}
-      <div className="grid grid-cols-2 gap-2 text-left">
+      {/* Categories quick-select pill row */}
+      <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1 snap-x scrollbar-hide">
         {categories.map((category) => (
           <button
             key={category.category_id}
             onClick={() => setActive(category)}
-            className="flex items-center gap-3 p-3.5 bg-white border border-neutral-200/60 hover:border-emerald-500/30 hover:bg-emerald-50/20 rounded-2xl transition-all text-left group"
+            className="flex items-center gap-2.5 pl-2 pr-4 py-2 bg-white border border-neutral-200 hover:border-emerald-500/40 hover:bg-emerald-50/30 rounded-full transition-all text-left group shrink-0 snap-start shadow-sm"
           >
-            <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-neutral-50 ring-1 ring-neutral-100 group-hover:ring-emerald-100 transition-all flex items-center justify-center">
+            <div className="w-9 h-9 rounded-full overflow-hidden shrink-0 bg-neutral-50 ring-1 ring-neutral-100 group-hover:ring-emerald-100 transition-all flex items-center justify-center">
               <img
                 src={getImageUrl(category.icon_url) || "/assets/images/card-1.jpg"}
                 alt={category.name}
@@ -122,7 +122,7 @@ export function ExpandableCategory({ categories, cityName }) {
                 crossOrigin="anonymous"
               />
             </div>
-            <span className="text-xs sm:text-sm font-extrabold text-neutral-800 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight">
+            <span className="text-xs sm:text-sm font-extrabold text-neutral-800 group-hover:text-emerald-700 transition-colors whitespace-nowrap">
               {category.name}
             </span>
           </button>

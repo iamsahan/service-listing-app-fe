@@ -3,7 +3,7 @@ import { CheckCircle, Home, Shield } from "lucide-react";
 
 export function ImagesSection() {
   return (
-    <div className="w-full lg:w-4/6 hidden lg:grid grid-cols-2 grid-rows-2 gap-3 auto-rows-[minmax(200px,1fr)]">
+    <div className="w-full hidden lg:grid grid-cols-2 grid-rows-2 gap-3 h-[420px]">
       {/* Main large image - left side */}
       <div className="relative col-span-1 row-span-2 rounded-[2rem] overflow-hidden group border border-neutral-200">
         <Image
